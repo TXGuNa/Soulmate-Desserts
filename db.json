@@ -515,25 +515,25 @@
     {
       "id": "1",
       "language": "en",
-      "currency": "USD",
+      "currency": "TMT",
       "currencies": [
         {
           "code": "TMT",
           "name": "Turkmen Manat",
           "symbol": "",
-          "rate": 20
+          "rate": 1
         },
         {
           "code": "USD",
           "name": "US Dollar",
           "symbol": "$",
-          "rate": 1
+          "rate": 0.05
         },
         {
           "code": "EUR",
           "name": "Euro",
           "symbol": "",
-          "rate": 0.8
+          "rate": 0.04
         }
       ],
       "contactInfo": {
@@ -541,7 +541,7 @@
         "email": "usa@soulmatedesserts.com"
       },
       "store": {
-        "shipping": 50,
+        "shipping": 1000,
         "taxRate": 8.25
       }
     }
