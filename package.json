@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"vite\"",
     "server": "json-server db.json --port 3002",
-    "build": "npx vite build",
+    "build": "node node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "seed:firestore": "node scripts/seed-firestore.js"
   },

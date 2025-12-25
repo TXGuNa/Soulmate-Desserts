@@ -19,10 +19,6 @@ jobs:
           node-version: '18'
       - name: Install Dependencies
         run: npm install
-      - name: Check node_modules/.bin permissions
-        run: ls -la node_modules/.bin
-      - name: Check PATH
-        run: echo $PATH
       - name: Build
         run: npm run build
       - name: Deploy to Firebase
