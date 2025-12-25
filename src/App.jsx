@@ -129,79 +129,6 @@ export default function App() {
     return `${displaySymbol} ${Number(converted).toFixed(2)}`;
   };
 
-  // Handle Base Currency Rotation (make selected currency the new Base 1.0)
-  const handleBaseCurrencyChange = async (newBaseCode) => {
-    const oldBase = settings.currencies.find(c => c.rate === 1) || settings.currencies.find(c => c.code === 'USD') || settings.currencies[0];
-    const newBase = settings.currencies.find(c => c.code === newBaseCode);
-
-    if (!newBase || newBase.code === oldBase.code) return;
-
-    setIsLoading(true);
-    try {
-      // Conversion factor: e.g. if TMT was 3.5, factor is 3.5
-      const factor = newBase.rate;
-
-      // 1. Update Currencies
-      // New Base becomes 1.0. All others are divided by factor.
-      // e.g. TMT (3.5) -> 1.0. USD (1.0) -> 1/3.5 = 0.2857
-      const updatedCurrencies = settings.currencies.map(c => ({
-        ...c,
-        rate: parseFloat((c.rate / factor).toFixed(6)) // Prevent excessive decimals
-      }));
-
-      // 2. Prepare Settings Update (including shipping cost conversion)
-      const updatedSettings = {
-        ...settings,
-        currencies: updatedCurrencies,
-        currency: newBaseCode, // Set new base as active currency too
-        store: settings.store ? {
-          ...settings.store,
-          shipping: parseFloat((settings.store.shipping * factor).toFixed(2))
-        } : settings.store
-      };
-
-      // 3. Prepare Products Update (Stored prices are now in new Base)
-      // Price increases by factor. e.g. 10 USD -> 35 TMT
-      const updatedProducts = products.map(p => ({
-        ...p,
-        price: parseFloat((p.price * factor).toFixed(2)),
-        makingPrice: p.makingPrice ? parseFloat((p.makingPrice * factor).toFixed(2)) : 0
-      }));
-
-      // 4. Prepare Ingredients Update
-      const updatedIngredients = ingredients.map(i => ({
-        ...i,
-        pricePerUnit: parseFloat((i.pricePerUnit * factor).toFixed(2))
-      }));
-
-      // 5. Apply Updates to API (Persistence)
-      await api.updateSettings(updatedSettings); // Update settings first
-
-      // Only update products/ingredients if they have valid IDs
-      const validProducts = updatedProducts.filter(p => p.id);
-      const validIngredients = updatedIngredients.filter(i => i.id);
-      
-      // Parallelize product/ingredient updates for speed - use allSettled to ignore individual failures
-      if (validProducts.length > 0 || validIngredients.length > 0) {
-        await Promise.allSettled([
-          ...validProducts.map(p => api.updateProduct(p.id, p)),
-          ...validIngredients.map(i => api.updateIngredient(i.id, i))
-        ]);
-      }
-      
-      // 6. Update Local State
-      setSettings(updatedSettings);
-      setProducts(updatedProducts);
-      setIngredients(updatedIngredients);
-      
-    } catch (error) {
-      console.error("Failed to rotate base currency:", error);
-      console.log("Failed to update base currency. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleCreateOrder = async (orderData) => {
     try {
       const newOrder = {
@@ -243,7 +170,13 @@ export default function App() {
       case 'login':
         return <LoginPage {...commonProps} />;
       case 'settings':
-        return <SettingsPage {...commonProps} settings={settings} setSettings={setSettings} onBaseCurrencyChange={handleBaseCurrencyChange} />;
+        return (
+          <SettingsPage
+            {...commonProps}
+            settings={settings}
+            setSettings={setSettings}
+          />
+        );
       case 'admin':
         return <AdminPage 
           {...commonProps} 
