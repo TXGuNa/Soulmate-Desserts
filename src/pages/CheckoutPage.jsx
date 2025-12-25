@@ -3,12 +3,13 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../context/TranslationContext';
 
-const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency }) => {
+const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency, settings }) => {
   const { cart: items, cartTotal: subtotal, clearCart } = useCart(); // Refactored: items=cart, subtotal=cartTotal
   const { user } = useAuth();
   const { t } = useTranslation();
   const [done, setDone] = useState(false);
-  const tax = subtotal * 0.0825;
+  const taxRate = settings?.store?.taxRate || 0;
+  const tax = subtotal * taxRate;
   const total = subtotal + tax;
   const formatPrice = formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
 
