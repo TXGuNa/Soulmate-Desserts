@@ -17,6 +17,16 @@ const SearchModal = ({ isOpen, onClose, products, formatCurrency }) => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleEsc);
+    }
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const filteredProducts = query.trim() === '' 

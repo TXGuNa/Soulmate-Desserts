@@ -17,6 +17,16 @@ const LoginModal = ({ isOpen, onClose, onNavigate }) => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleEsc);
+    }
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
   const handleLogin = e => {
     e.preventDefault(); 
     setError('');
