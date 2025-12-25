@@ -141,6 +141,16 @@ const DICTIONARY = {
   cannotDeleteBase: { en: 'Cannot delete base currency', ru: 'Нельзя удалить базовую валюту', tr: 'Baz para birimi silinemez', tk: 'Esasy pul birligini pozup bolmaýar' },
   cannotDeleteActive: { en: 'Cannot delete active currency. Please switch to another currency first.', ru: 'Нельзя удалить активную валюту. Пожалуйста, сначала переключитесь на другую.', tr: 'Aktif para birimi silinemez. Lütfen önce başka bir para birimine geçin.', tk: 'Işjeň pul birligini pozup bolmaýar. Ilki bilen başga pul birligine geçiň.' },
   
+  // NEW KEYS (User Feedback & Base Currency)
+  failedToSaveLanguage: { en: 'Failed to save language.', ru: 'Не удалось сохранить язык.', tr: 'Dil kaydedilemedi.', tk: 'Dil saklanyp bilmedi.' },
+  failedToSaveDefaultCurrency: { en: 'Failed to save default currency.', ru: 'Не удалось сохранить валюту по умолчанию.', tr: 'Varsayılan para birimi kaydedilemedi.', tk: 'Bellenen pul birligi saklanyp bilmedi.' },
+  failedToSaveChanges: { en: 'Failed to save changes.', ru: 'Не удалось сохранить изменения.', tr: 'Değişiklikler kaydedilemedi.', tk: 'Üýtgeşmeler saklanyp bilmedi.' },
+  failedToDeleteCurrency: { en: 'Failed to delete currency.', ru: 'Не удалось удалить валюту.', tr: 'Para birimi silinemedi.', tk: 'Pul birligi pozulyp bilmedi.' },
+  failedToUpdateExchangeRate: { en: 'Failed to update exchange rate.', ru: 'Не удалось обновить курс обмена.', tr: 'Döviz kuru güncellenemedi.', tk: 'Alyş-çalyş kursy täzelenip bilmedi.' },
+  saving: { en: 'Saving...', ru: 'Сохранение...', tr: 'Kaydediliyor...', tk: 'Saklanýar...' },
+  setAsBase: { en: 'Set as Base', ru: 'Установить как базовую', tr: 'Temel Olarak Ayarla', tk: 'Esasy Edip Bellik' },
+  baseCurrency: { en: 'Base Currency', ru: 'Базовая Валюта', tr: 'Temel Para Birimi', tk: 'Esasy Pul Birligi' },
+
   // Store Settings
   storeSettings: { en: 'Store Settings', ru: 'Настройки Магазина', tr: 'Mağaza Ayarları', tk: 'Dükan Sazlamalary' },
   shippingCost: { en: 'Shipping Cost', ru: 'Стоимость Доставки', tr: 'Kargo Ücreti', tk: 'Eltip Bermek Bahasy' },

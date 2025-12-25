@@ -515,7 +515,7 @@
     {
       "id": "1",
       "language": "en",
-      "currency": "TMT",
+      "currency": "USD",
       "currencies": [
         {
           "code": "TMT",
@@ -537,8 +537,8 @@
         }
       ],
       "contactInfo": {
-        "phone": "+1 737 2220947",
-        "email": "usa@soulmatedesserts.com"
+        "phone": "+993 64 231313",
+        "email": "anazikd@gmail.com"
       },
       "store": {
         "shipping": 1000,
