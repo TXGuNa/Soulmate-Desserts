@@ -10,6 +10,9 @@ on:
 
 jobs:
   build_and_deploy:
+    permissions:
+      checks: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
