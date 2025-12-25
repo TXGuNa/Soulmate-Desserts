@@ -97,11 +97,11 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
 
   const handleDeleteCurrency = async (code) => {
     if (code === 'USD') {
-      alert(t('cannotDeleteBase'));
+      console.log(t('cannotDeleteBase'));
       return;
     }
     if (settings.currency === code) {
-      alert(t('cannotDeleteActive'));
+      console.log(t('cannotDeleteActive'));
       return;
     }
     
@@ -399,10 +399,10 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
             onClick={async () => {
               try {
                 await api.updateSettings(settings);
-                alert(t('success'));
+                console.log(t('success'));
               } catch (err) {
                 console.error(err);
-                alert(t('error'));
+                console.log(t('error'));
               }
             }}
           >

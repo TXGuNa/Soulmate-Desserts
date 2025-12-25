@@ -24,7 +24,7 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
     // Validation
     const nameToCheck = editing ? editing.name : newIng.name;
     if (!nameToCheck || !nameToCheck.trim()) {
-      alert(t('ingredientNameRequired'));
+      console.log(t('ingredientNameRequired'));
       return;
     }
     
@@ -51,7 +51,7 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
         }
       } catch (error) {
         console.error("Failed to save ingredient:", error);
-        alert(t('errorSavingIngredient') || "Failed to save ingredient.");
+        console.log(t('errorSavingIngredient') || "Failed to save ingredient.");
       }
     };
     saveIngredient();
@@ -84,7 +84,7 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
          setIngredients(prev => prev.filter(ing => ing.id !== id));
       }).catch(err => {
          console.error("Failed to delete ingredient:", err);
-         alert("Failed to delete ingredient");
+         console.log("Failed to delete ingredient");
       });
     }
   };

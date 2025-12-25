@@ -153,7 +153,7 @@ const ContactManagement = ({ onDefaultChange, userCountry }) => {
 
   const handleDelete = async (contact) => {
     if (contact.isDefault) {
-      alert(t('cannotDeleteDefault'));
+      console.log(t('cannotDeleteDefault'));
       return;
     }
     

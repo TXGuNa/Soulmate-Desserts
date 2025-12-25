@@ -196,7 +196,7 @@ export default function App() {
       
     } catch (error) {
       console.error("Failed to rotate base currency:", error);
-      alert("Failed to update base currency. Please try again.");
+      console.log("Failed to update base currency. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -213,15 +213,15 @@ export default function App() {
       await api.createOrder(newOrder);
       setOrders(prev => [newOrder, ...prev]);
       handleNavigate('home');
-      alert(`Order Placed Successfully! Order ID: ${newOrder.id}`);
+      console.log(`Order Placed Successfully! Order ID: ${newOrder.id}`);
     } catch (err) {
-      alert("Failed to place order");
+      console.log("Failed to place order");
       console.error(err);
     }
   };
 
   const handleResetData = () => {
-     alert("Reset not fully supported in DB mode. Please edit db.json directly.");
+     console.log("Reset not fully supported in DB mode. Please edit db.json directly.");
   };
 
   // Currency helpers to pass down
