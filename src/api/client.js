@@ -1,5 +1,5 @@
 import { isFirebaseEnabled } from '../firebase';
-import { firebaseProducts, firebaseCountryContacts, firebaseSettings } from './firebaseClient';
+import { firebaseProducts, firebaseCountryContacts, firebaseSettings, firebaseOrders } from './firebaseClient';
 
 const API_URL = 'http://localhost:3002';
 
@@ -38,9 +38,9 @@ export const api = {
   deleteIngredient: (id) => request(`ingredients/${id}`, { method: 'DELETE' }),
 
   // Orders
-  getOrders: () => request('orders'),
-  createOrder: (order) => request('orders', { method: 'POST', body: JSON.stringify(order) }),
-  updateOrder: (id, order) => request(`orders/${id}`, { method: 'PUT', body: JSON.stringify(order) }),
+  getOrders: () => useFirebase ? firebaseOrders.getOrders() : request('orders'),
+  createOrder: (order) => useFirebase ? firebaseOrders.createOrder(order) : request('orders', { method: 'POST', body: JSON.stringify(order) }),
+  updateOrder: (id, order) => useFirebase ? firebaseOrders.updateOrder(id, order) : request(`orders/${id}`, { method: 'PUT', body: JSON.stringify(order) }),
 
   // Messages
   getMessages: () => request('messages'),
