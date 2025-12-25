@@ -8,9 +8,16 @@ const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency, settings }) =
   const { user } = useAuth();
   const { t } = useTranslation();
   const [done, setDone] = useState(false);
+  
   const taxRate = settings?.store?.taxRate || 0;
   const tax = subtotal * (taxRate / 100);
-  const total = subtotal + tax;
+
+  const currentCurrency = settings?.currencies?.find(c => c.code === settings?.currency);
+  const rate = currentCurrency?.rate || 1;
+  const shippingBase = settings?.store?.shipping || 0;
+  const shipping = shippingBase * rate; // Apply conversion
+
+  const total = subtotal + tax + shipping;
   const formatPrice = formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
 
   if (done) return <div className="page"><div className="success-msg"><div className="success-icon">🎉</div><h2>{t('orderPlaced')}</h2><p>{t('orderPlacedMessage')}</p><button className="btn btn-primary" onClick={() => onNavigate('home')}>{t('continueShopping')}</button></div></div>;
@@ -67,6 +74,12 @@ const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency, settings }) =
               <div className="summary-row">
                 <span>{t('tax')}</span>
                 <span>{formatPrice(tax)}</span>
+              </div>
+            )}
+            {shipping > 0 && (
+              <div className="summary-row">
+                <span>{t('shipping')}</span>
+                <span>{formatPrice(shipping)}</span>
               </div>
             )}
             <div className="summary-row total">
