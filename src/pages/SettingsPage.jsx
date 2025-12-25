@@ -31,7 +31,9 @@ const SettingsPage = ({
   const [shippingInput, setShippingInput] = useState("");
 
   const baseCurrencyObj = useMemo(() => {
+    // Prefer the currently selected currency; otherwise fall back to the rate === 1 base
     return (
+      settings.currencies.find((c) => c.code === settings.currency) ||
       settings.currencies.find((c) => c.rate === 1) || {
         code: "USD",
         name: "US Dollar",
@@ -39,7 +41,7 @@ const SettingsPage = ({
         rate: 1,
       }
     );
-  }, [settings.currencies]);
+  }, [settings.currencies, settings.currency]);
   // Base currency switching removed; keep data as-is
 
   // Update shipping input when settings or currency changes
@@ -75,7 +77,31 @@ const SettingsPage = ({
   const handleCurrencyChange = async (currencyCode) => {
     setLoading(true);
     setError(null);
-    const newSettings = { ...settings, currency: currencyCode };
+
+    const selectedCurrency = settings.currencies.find(
+      (c) => c.code === currencyCode
+    );
+
+    if (!selectedCurrency) {
+      setError(t("failedToSaveDefaultCurrency"));
+      setLoading(false);
+      return;
+    }
+
+    // Rebase: make the selected currency the new base (rate 1) and adjust the others
+    const pivotRate = selectedCurrency.rate || 1;
+    const rebasedCurrencies = settings.currencies.map((c) =>
+      c.code === currencyCode
+        ? { ...c, rate: 1 }
+        : { ...c, rate: parseFloat((c.rate / pivotRate).toFixed(6)) || 1 }
+    );
+
+    const newSettings = {
+      ...settings,
+      currency: currencyCode,
+      currencies: rebasedCurrencies,
+    };
+
     setSettings(newSettings);
     try {
       await api.updateSettings(newSettings);
