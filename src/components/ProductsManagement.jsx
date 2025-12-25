@@ -68,7 +68,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
       }
     } catch (err) {
       console.error('Failed to delete product:', err);
-      alert(t('error') || 'Error');
+      console.log(t('error') || 'Error');
     } finally {
       setConfirmDeleteId(null);
     }
@@ -135,7 +135,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
 
     files.forEach((file, idx) => {
       if (file.size > MAX_SIZE) {
-        alert(`${file.name}: ${t('imageSizeLimit')}`);
+        console.log(`${file.name}: ${t('imageSizeLimit')}`);
         return;
       }
       const reader = new FileReader();
@@ -144,7 +144,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
         const img = new Image();
         img.onload = async () => {
           if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
-            alert(`${file.name}: ${t('imageResolutionLimit') || `Image resolution must be ≤ ${MAX_WIDTH}x${MAX_HEIGHT}`} `);
+            console.log(`${file.name}: ${t('imageResolutionLimit') || `Image resolution must be ≤ ${MAX_WIDTH}x${MAX_HEIGHT}`} `);
             return;
           }
           try {
@@ -365,7 +365,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
 
     // Validation: must have at least one image
     if (allImages.length === 0) {
-      alert(t('errorAddAtLeastOneImage') || 'Please add at least one image.');
+      console.log(t('errorAddAtLeastOneImage') || 'Please add at least one image.');
       return;
     }
 
@@ -377,7 +377,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
     const sellingPrice = parseFloat(form.price) || 0;
     
     if (sellingPrice < totalCost) {
-      alert(t('errorPriceTooLow') || 'Selling Price cannot be lower than Total Cost!');
+      console.log(t('errorPriceTooLow') || 'Selling Price cannot be lower than Total Cost!');
       return;
     }
     
@@ -426,7 +426,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
         setEditing(null);
       } catch (error) {
         console.error("Failed to save product:", error);
-        alert(t('errorSavingProduct') || "Failed to save product. Please try again.");
+        console.log(t('errorSavingProduct') || "Failed to save product. Please try again.");
       }
     };
 
