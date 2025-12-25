@@ -171,7 +171,7 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
     }
   };
 
-  const baseCurrencyObj = settings.currencies.find(c => c.rate === 1) || { code: 'USD', name: 'US Dollar', symbol: '$', rate: 1 };
+
   const currentCurrency = settings.currencies.find(c => c.code === settings.currency) || baseCurrencyObj;
 
   return (
