@@ -9,6 +9,8 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
 
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!isAdmin && (activeTab === 'currencies' || activeTab === 'store')) {
@@ -18,6 +20,10 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
   const [currencyForm, setCurrencyForm] = useState({ code: '', name: '', symbol: '', rate: 1 });
   const [editingCurrency, setEditingCurrency] = useState(null);
   const [shippingInput, setShippingInput] = useState('');
+
+  const baseCurrencyObj = useMemo(() => {
+    return settings.currencies.find(c => c.rate === 1) || { code: 'USD', name: 'US Dollar', symbol: '$', rate: 1 };
+  }, [settings.currencies]);
 
   // Update shipping input when settings or currency changes
   useEffect(() => {
@@ -34,27 +40,39 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
   ];
 
   const handleLanguageChange = async (langCode) => {
+    setLoading(true);
+    setError(null);
     const newSettings = { ...settings, language: langCode };
     setSettings(newSettings);
     try {
       await api.updateSettings(newSettings);
     } catch (err) {
+      setError(t('failedToSaveLanguage'));
       console.error("Failed to save language:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCurrencyChange = async (currencyCode) => {
+    setLoading(true);
+    setError(null);
     const newSettings = { ...settings, currency: currencyCode };
     setSettings(newSettings);
     try {
       await api.updateSettings(newSettings);
     } catch (err) {
+      setError(t('failedToSaveDefaultCurrency'));
       console.error("Failed to save default currency:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleAddCurrency = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     let newSettings;
     if (editingCurrency) {
       // If editing a non-base currency, convert the rate back (invert it for storage)
@@ -84,7 +102,10 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
     try {
       await api.updateSettings(newSettings);
     } catch (err) {
+      setError(t('failedToSaveChanges'));
       console.error("Failed to save currency changes:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,12 +117,17 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
   };
 
   const handleDeleteCurrency = async (code) => {
-    if (code === 'USD') {
-      console.log(t('cannotDeleteBase'));
+    setLoading(true);
+    setError(null);
+    const baseCurrencyObj = settings.currencies.find(c => c.rate === 1);
+    if (code === baseCurrencyObj.code) {
+      setError(t('cannotDeleteBase'));
+      setLoading(false);
       return;
     }
     if (settings.currency === code) {
-      console.log(t('cannotDeleteActive'));
+      setError(t('cannotDeleteActive'));
+      setLoading(false);
       return;
     }
     
@@ -115,11 +141,16 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
     try {
       await api.updateSettings(newSettings);
     } catch (err) {
+      setError(t('failedToDeleteCurrency'));
       console.error("Failed to delete currency:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUpdateExchangeRate = async (code, newRate) => {
+    setLoading(true);
+    setError(null);
     const newSettings = {
       ...settings,
       currencies: settings.currencies.map(c => 
@@ -133,7 +164,10 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
     try {
       await api.updateSettings(newSettings);
     } catch (err) {
+      setError(t('failedToUpdateExchangeRate'));
       console.error("Failed to update exchange rate:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -269,6 +303,8 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
 
           <div className="form-card">
             <h3 style={{fontFamily:"'Playfair Display',serif",marginBottom:'1.5rem'}}>{t('manageCurrencies')}</h3>
+            {loading && <p>{t('loading')}...</p>}
+            {error && <p style={{color: 'red'}}>{error}</p>}
             {settings.currencies.length === 0 ? (
               <p style={{color:'var(--chocolate)',opacity:0.7}}>{t('noCurrenciesAdded')}</p>
             ) : (
@@ -300,6 +336,7 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
                             }}
                             title={t('setDefault')}
                             style={{background:'none',border:'none',cursor:'pointer',padding:'4px'}}
+                            disabled={loading}
                           >
                             <Star 
                               size={20} 
@@ -325,6 +362,7 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
                                 handleUpdateExchangeRate(curr.code, storedRate);
                               }}
                               style={{width:'120px',padding:'0.5rem',border:'2px solid var(--blush)',borderRadius:'8px',background:'rgba(255,255,255,0.8)'}}
+                              disabled={loading}
                             />
                           )}
                         </td>
@@ -336,6 +374,7 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
                                 onClick={() => handleEditCurrency(curr)}
                                 title={t('edit')}
                                 style={{padding:'0.5rem',display:'flex',alignItems:'center',justifyContent:'center'}}
+                                disabled={loading}
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -344,6 +383,7 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
                                 onClick={() => handleDeleteCurrency(curr.code)}
                                 title={t('delete')}
                                 style={{padding:'0.5rem',display:'flex',alignItems:'center',justifyContent:'center'}}
+                                disabled={loading}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -397,17 +437,24 @@ const SettingsPage = ({ onNavigate, settings, setSettings, onBaseCurrencyChange 
             className="btn btn-primary"
             style={{marginTop:'1rem'}}
             onClick={async () => {
+              setLoading(true);
+              setError(null);
               try {
                 await api.updateSettings(settings);
                 console.log(t('success'));
               } catch (err) {
+                setError(t('failedToSaveChanges'));
                 console.error(err);
                 console.log(t('error'));
+              } finally {
+                setLoading(false);
               }
             }}
+            disabled={loading}
           >
-            {t('saveChanges')}
+            {loading ? t('saving') : t('saveChanges')}
           </button>
+          {error && <p style={{color: 'red', marginTop: '1rem'}}>{error}</p>}
         </div>
       )}
     </div>
