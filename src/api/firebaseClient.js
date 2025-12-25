@@ -90,3 +90,27 @@ export const firebaseSettings = {
     return payload;
   },
 };
+
+const ordersCol = () => collection(db, 'orders');
+
+export const firebaseOrders = {
+  async getOrders() {
+    ensureReady();
+    const snap = await getDocs(ordersCol());
+    return snap.docs.map(mapDoc);
+  },
+  async createOrder(order) {
+    ensureReady();
+    if (order.id) {
+      await setDoc(doc(ordersCol(), order.id), order, { merge: true });
+      return order;
+    }
+    const created = await addDoc(ordersCol(), order);
+    return { ...order, id: created.id };
+  },
+  async updateOrder(id, order) {
+    ensureReady();
+    await setDoc(doc(ordersCol(), id), { ...order, id }, { merge: true });
+    return { ...order, id };
+  },
+};
