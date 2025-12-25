@@ -202,14 +202,28 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <TranslationProvider language={settings?.language || 'en'}>
+        <TranslationProvider language={settings?.language || "en"}>
           <div className="app">
-            <Header onNavigate={handleNavigate} products={products} formatCurrency={formatCurrency} />
-            <div key={page} className="page-container">
+            <Header
+              onNavigate={handleNavigate}
+              products={products}
+              formatCurrency={formatCurrency}
+            />
+            <div
+              key={page}
+              className={`page-container ${page === "home" ? "home-full" : ""}`}
+            >
               {renderPage()}
             </div>
-            <CartDrawer onNavigate={handleNavigate} formatCurrency={formatCurrency} settings={settings} />
-            <Footer onNavigate={handleNavigate} contactInfo={settings?.contactInfo} />
+            <CartDrawer
+              onNavigate={handleNavigate}
+              formatCurrency={formatCurrency}
+              settings={settings}
+            />
+            <Footer
+              onNavigate={handleNavigate}
+              contactInfo={settings?.contactInfo}
+            />
           </div>
         </TranslationProvider>
       </CartProvider>
