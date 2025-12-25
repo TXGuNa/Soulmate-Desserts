@@ -1,5 +1,5 @@
 import { isFirebaseEnabled } from '../firebase';
-import { firebaseProducts } from './firebaseClient';
+import { firebaseProducts, firebaseCountryContacts } from './firebaseClient';
 
 const API_URL = 'http://localhost:3002';
 
@@ -62,10 +62,10 @@ export const api = {
   updateSettings: (settings) => request('settings/1', { method: 'PUT', body: JSON.stringify({ id: 1, ...settings }) }),
 
   // Country Contacts
-  getCountryContacts: () => request('countryContacts'),
-  createCountryContact: (contact) => request('countryContacts', { method: 'POST', body: JSON.stringify(contact) }),
-  updateCountryContact: (id, contact) => request(`countryContacts/${id}`, { method: 'PUT', body: JSON.stringify(contact) }),
-  deleteCountryContact: (id) => request(`countryContacts/${id}`, { method: 'DELETE' }),
+  getCountryContacts: () => useFirebase ? firebaseCountryContacts.getCountryContacts() : request('countryContacts'),
+  createCountryContact: (contact) => useFirebase ? firebaseCountryContacts.createCountryContact(contact) : request('countryContacts', { method: 'POST', body: JSON.stringify(contact) }),
+  updateCountryContact: (id, contact) => useFirebase ? firebaseCountryContacts.updateCountryContact(id, contact) : request(`countryContacts/${id}`, { method: 'PUT', body: JSON.stringify(contact) }),
+  deleteCountryContact: (id) => useFirebase ? firebaseCountryContacts.deleteCountryContact(id) : request(`countryContacts/${id}`, { method: 'DELETE' }),
 
   // IP Geolocation (free API)
   getCountryFromIP: async () => {

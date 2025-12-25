@@ -37,3 +37,31 @@ export const firebaseProducts = {
     return true;
   }
 };
+
+const countryContactsCol = () => collection(db, 'countryContacts');
+
+export const firebaseCountryContacts = {
+  async getCountryContacts() {
+    ensureReady();
+    const snap = await getDocs(countryContactsCol());
+    return snap.docs.map(mapDoc);
+  },
+  async createCountryContact(contact) {
+    ensureReady();
+    // For country contacts, the ID is typically the country code (e.g., 'us', 'tm')
+    // So we use setDoc instead of addDoc to enforce this.
+    if (!contact.id) throw new Error('Contact must have an ID (country code).');
+    await setDoc(doc(countryContactsCol(), contact.id), contact);
+    return contact;
+  },
+  async updateCountryContact(id, contact) {
+    ensureReady();
+    await setDoc(doc(countryContactsCol(), id), contact, { merge: true });
+    return { ...contact, id };
+  },
+  async deleteCountryContact(id) {
+    ensureReady();
+    await deleteDoc(doc(countryContactsCol(), id));
+    return true;
+  }
+};
