@@ -9,7 +9,7 @@ const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency, settings }) =
   const { t } = useTranslation();
   const [done, setDone] = useState(false);
   const taxRate = settings?.store?.taxRate || 0;
-  const tax = subtotal * taxRate;
+  const tax = subtotal * (taxRate / 100);
   const total = subtotal + tax;
   const formatPrice = formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
 
@@ -58,7 +58,22 @@ const CheckoutPage = ({ onNavigate, onCreateOrder, formatCurrency, settings }) =
         <div className="checkout-summary">
           <h3>{t('orderSummary')}</h3>
           {items.map(i => <div key={i.id} className="summary-item"><div className="summary-item-img"><img src={i.images[0]} alt="" /></div><div className="summary-item-details"><div className="summary-item-name">{i.name}</div><div className="summary-item-qty">{t('quantity')}: {i.quantity}</div></div><div className="summary-item-price">{formatPrice(i.price * i.quantity)}</div></div>)}
-          <div className="summary-totals"><div className="summary-row"><span>{t('subtotal')}</span><span>{formatPrice(subtotal)}</span></div><div className="summary-row"><span>{t('tax')}</span><span>{formatPrice(tax)}</span></div><div className="summary-row total"><span>{t('total')}</span><span>{formatPrice(total)}</span></div></div>
+          <div className="summary-totals">
+            <div className="summary-row">
+              <span>{t('subtotal')}</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+            {tax > 0 && (
+              <div className="summary-row">
+                <span>{t('tax')}</span>
+                <span>{formatPrice(tax)}</span>
+              </div>
+            )}
+            <div className="summary-row total">
+              <span>{t('total')}</span>
+              <span>{formatPrice(total)}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
