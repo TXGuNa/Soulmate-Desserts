@@ -181,7 +181,7 @@ const OrdersManagement = ({ orders, setOrders, formatCurrency }) => {
                       <div>
                         <strong>{t("items")}:</strong>
                       </div>
-                      {order.items.map((i) => (
+                      {(order.items || []).map((i) => (
                         <div
                           key={`${order.id}-${i.id}`}
                           style={{ fontSize: "0.85rem", opacity: 0.8 }}
