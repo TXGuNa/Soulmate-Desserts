@@ -1,5 +1,5 @@
 import { isFirebaseEnabled } from '../firebase';
-import { firebaseProducts, firebaseCountryContacts } from './firebaseClient';
+import { firebaseProducts, firebaseCountryContacts, firebaseSettings } from './firebaseClient';
 
 const API_URL = 'http://localhost:3002';
 
@@ -58,8 +58,10 @@ export const api = {
   deleteInvite: (id) => request(`invites/${id}`, { method: 'DELETE' }),
   
   // Settings
-  getSettings: () => request('settings/1'),
-  updateSettings: (settings) => request('settings/1', { method: 'PUT', body: JSON.stringify({ id: 1, ...settings }) }),
+  getSettings: () => useFirebase ? firebaseSettings.getSettings() : request('settings/1'),
+  updateSettings: (settings) => useFirebase
+    ? firebaseSettings.updateSettings(settings)
+    : request('settings/1', { method: 'PUT', body: JSON.stringify({ id: 1, ...settings }) }),
 
   // Country Contacts
   getCountryContacts: () => useFirebase ? firebaseCountryContacts.getCountryContacts() : request('countryContacts'),

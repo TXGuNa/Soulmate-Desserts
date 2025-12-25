@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, setDoc, doc, deleteDoc, getDoc } from 'firebase/firestore';
 import { db, isFirebaseEnabled } from '../firebase';
 
 const ensureReady = () => {
@@ -64,4 +64,29 @@ export const firebaseCountryContacts = {
     await deleteDoc(doc(countryContactsCol(), id));
     return true;
   }
+};
+
+// Settings stored as a single document
+const settingsDoc = () => doc(db, 'settings', 'default');
+
+export const firebaseSettings = {
+  async getSettings() {
+    ensureReady();
+    const snap = await getDoc(settingsDoc());
+    if (!snap.exists()) {
+      return {
+        id: 'default',
+        language: 'en',
+        currency: 'USD',
+        currencies: [{ code: 'USD', name: 'US Dollar', symbol: '$', rate: 1 }],
+      };
+    }
+    return { id: snap.id, ...snap.data() };
+  },
+  async updateSettings(settings) {
+    ensureReady();
+    const payload = { id: 'default', ...settings };
+    await setDoc(settingsDoc(), payload, { merge: true });
+    return payload;
+  },
 };
