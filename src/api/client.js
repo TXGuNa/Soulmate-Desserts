@@ -1,7 +1,7 @@
 import { isFirebaseEnabled } from '../firebase';
-import { firebaseProducts, firebaseCountryContacts, firebaseSettings, firebaseOrders } from './firebaseClient';
+import { firebaseProducts, firebaseCountryContacts, firebaseSettings, firebaseOrders, firebaseIngredients, firebaseMessages, firebaseUsers, firebaseInvites } from './firebaseClient';
 
-const API_URL = 'http://localhost:3002';
+const API_URL = 'http://localhost:3001';
 
 // Generic fetch wrapper
 const request = async (endpoint, options = {}) => {
@@ -45,12 +45,19 @@ export const api = {
       : request(`products/${id}`, { method: "DELETE" }),
 
   // Ingredients
-  getIngredients: () => request("ingredients"),
+  // Ingredients
+  getIngredients: () => 
+    useFirebase ? firebaseIngredients.getIngredients() : request("ingredients"),
   createIngredient: (ing) =>
-    request("ingredients", { method: "POST", body: JSON.stringify(ing) }),
+    useFirebase 
+      ? firebaseIngredients.createIngredient(ing)
+      : request("ingredients", { method: "POST", body: JSON.stringify(ing) }),
   updateIngredient: (id, ing) =>
-    request(`ingredients/${id}`, { method: "PUT", body: JSON.stringify(ing) }),
-  deleteIngredient: (id) => request(`ingredients/${id}`, { method: "DELETE" }),
+    useFirebase
+      ? firebaseIngredients.updateIngredient(id, ing)
+      : request(`ingredients/${id}`, { method: "PUT", body: JSON.stringify(ing) }),
+  deleteIngredient: (id) => 
+    useFirebase ? firebaseIngredients.deleteIngredient(id) : request(`ingredients/${id}`, { method: "DELETE" }),
 
   // Orders
   getOrders: () =>
@@ -68,23 +75,40 @@ export const api = {
         }),
 
   // Messages
-  getMessages: () => request("messages"),
+  // Messages
+  getMessages: () => 
+    useFirebase ? firebaseMessages.getMessages() : request("messages"),
   createMessage: (msg) =>
-    request("messages", { method: "POST", body: JSON.stringify(msg) }),
-  deleteMessage: (id) => request(`messages/${id}`, { method: "DELETE" }),
+    useFirebase
+      ? firebaseMessages.createMessage(msg)
+      : request("messages", { method: "POST", body: JSON.stringify(msg) }),
+  deleteMessage: (id) => 
+    useFirebase ? firebaseMessages.deleteMessage(id) : request(`messages/${id}`, { method: "DELETE" }),
 
   // Users (Mock Auth)
-  getUsers: () => request("users"),
+  // Users (Mock Auth)
+  getUsers: () => 
+    useFirebase ? firebaseUsers.getUsers() : request("users"),
   createUser: (user) =>
-    request("users", { method: "POST", body: JSON.stringify(user) }),
-  deleteUser: (id) => request(`users/${id}`, { method: "DELETE" }),
+    useFirebase
+      ? firebaseUsers.createUser(user)
+      : request("users", { method: "POST", body: JSON.stringify(user) }),
+  deleteUser: (id) => 
+    useFirebase ? firebaseUsers.deleteUser(id) : request(`users/${id}`, { method: "DELETE" }),
   // Invites
-  getInvites: () => request("invites"),
+  // Invites
+  getInvites: () => 
+    useFirebase ? firebaseInvites.getInvites() : request("invites"),
   createInvite: (invite) =>
-    request("invites", { method: "POST", body: JSON.stringify(invite) }),
+    useFirebase
+      ? firebaseInvites.createInvite(invite)
+      : request("invites", { method: "POST", body: JSON.stringify(invite) }),
   updateInvite: (id, invite) =>
-    request(`invites/${id}`, { method: "PUT", body: JSON.stringify(invite) }),
-  deleteInvite: (id) => request(`invites/${id}`, { method: "DELETE" }),
+    useFirebase
+      ? firebaseInvites.updateInvite(id, invite)
+      : request(`invites/${id}`, { method: "PUT", body: JSON.stringify(invite) }),
+  deleteInvite: (id) => 
+    useFirebase ? firebaseInvites.deleteInvite(id) : request(`invites/${id}`, { method: "DELETE" }),
 
   // Settings
   getSettings: () =>
