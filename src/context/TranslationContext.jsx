@@ -8,6 +8,7 @@ export const useTranslation = () => useContext(TranslationContext);
 export const TranslationProvider = ({ children, language }) => {
   const t = (key) => {
     const lang = language || 'en';
+    if (!key || typeof key !== 'string') return key || '';
     const keys = key.split('.');
 
     let value = translations[lang];

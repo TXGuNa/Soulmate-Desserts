@@ -34,21 +34,7 @@ const ProductModal = ({
 
   if (!product) return null;
   const price = product.price;
-  const baseCurrency = settings?.currencies?.find((c) => c.rate === 1) || {
-    code: "USD",
-    symbol: "$",
-    rate: 1,
-  };
-  const currentCurrency =
-    settings?.currencies?.find((c) => c.code === settings?.currency) ||
-    baseCurrency;
-  const rate = currentCurrency?.rate || 1;
-  const symbol =
-    currentCurrency?.symbol && currentCurrency.symbol.trim()
-      ? currentCurrency.symbol
-      : currentCurrency?.code || "USD";
-  const formatPriceWithCode = (amount) =>
-    `${symbol} ${(amount * rate).toFixed(2)}`;
+
   const images =
     product.images && Array.isArray(product.images)
       ? product.images
@@ -150,7 +136,7 @@ const ProductModal = ({
             </p>
 
             <div className="modal-total-amount">
-              {formatPriceWithCode(price * qty)}
+              {formatCurrency(price * qty)}
             </div>
 
             <div className="modal-qty">

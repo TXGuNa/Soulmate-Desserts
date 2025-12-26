@@ -125,7 +125,7 @@ const OrdersManagement = ({ orders, setOrders, formatCurrency }) => {
                       <strong
                         style={{ fontSize: "1.1rem", color: "var(--espresso)" }}
                       >
-                        {order.id.startsWith("#") ? order.id : `#${order.id}`}
+                        {String(order.id).startsWith("#") ? order.id : `#${order.id}`}
                       </strong>
                       <span
                         style={{
@@ -190,7 +190,7 @@ const OrdersManagement = ({ orders, setOrders, formatCurrency }) => {
                       }}
                     >
                       <strong>{t("delivery")}:</strong> {order.date} @{" "}
-                      {order.time} ({t(order.timeOfDay)})
+                      {order.time} {order.timeOfDay && `(${t(order.timeOfDay)})`}
                     </div>
                   </div>
                   <div style={{ textAlign: "right" }}>

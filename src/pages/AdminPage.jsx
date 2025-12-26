@@ -1,3 +1,13 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from '../context/TranslationContext';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../api/client';
+import { ADMIN } from '../data/mockData';
+import { Trash2 } from 'lucide-react';
+import OrdersManagement from '../components/OrdersManagement';
+import ProductsManagement from '../components/ProductsManagement';
+import IngredientsManagement from '../components/IngredientsManagement';
+import ContactManagement from '../components/ContactManagement';
 
 const AdminPage = ({
   onNavigate,
@@ -13,6 +23,7 @@ const AdminPage = ({
   currentCurrency,
   onResetData,
   userCountry,
+  refreshData
 }) => {
   const {
     isAdmin,
@@ -54,10 +65,7 @@ const AdminPage = ({
     [orders]
   );
 
-  const currencyDisplay =
-    currentCurrency?.symbol?.trim() || currentCurrency?.code || "USD";
-  const formatPrice = (amount) =>
-    `${currencyDisplay} ${Number(amount || 0).toFixed(2)}`;
+
 
   // Load messages on mount
   useEffect(() => {
@@ -103,6 +111,7 @@ const AdminPage = ({
       setMsg(`${t("createdToken")} ${result.invite.token}`);
       setNewInv({ email: "", role: "dealer", days: 7 });
       setTimeout(() => setMsg(""), 5000);
+      if (refreshData) refreshData();
     }
   };
 
@@ -237,7 +246,7 @@ const AdminPage = ({
         ))}
       </div>
 
-      {/* {tab === "dashboard" && (
+      {tab === "dashboard" && (
         <div
           className="admin-tab-content"
           style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
@@ -257,7 +266,7 @@ const AdminPage = ({
                   color: "var(--terracotta)",
                 }}
               >
-                {formatPrice(totalRevenue)}
+                {formatCurrency(totalRevenue)}
               </div>
               <div style={{ color: "var(--chocolate)", opacity: 0.7 }}>
                 {t("totalRevenue")}
@@ -350,7 +359,7 @@ const AdminPage = ({
                     <div
                       style={{ fontWeight: 600, color: "var(--terracotta)" }}
                     >
-                      {formatPrice(o.total)}
+                      {formatCurrency(o.total)}
                     </div>
                     <div
                       style={{
@@ -488,9 +497,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "invites" && (
+      {tab === "invites" && (
         <div className="admin-tab-content">
           <div className="form-card" style={{ marginBottom: "2rem" }}>
             <h3
@@ -625,9 +634,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "orders" && (
+      {tab === "orders" && (
         <div className="admin-tab-content">
           <div
             className="admin-dashboard-grid"
@@ -701,9 +710,9 @@ const AdminPage = ({
             formatCurrency={formatCurrency}
           />
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "products" && (
+      {tab === "products" && (
         <div className="admin-tab-content">
           <ProductsManagement
             products={safeProducts}
@@ -713,20 +722,21 @@ const AdminPage = ({
             currentCurrency={currentCurrency}
           />
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "ingredients" && (
+      {tab === "ingredients" && (
         <div className="admin-tab-content">
           <IngredientsManagement
             ingredients={safeIngredients}
             setIngredients={setIngredients}
             products={safeProducts}
             currentCurrency={currentCurrency}
+            formatCurrency={formatCurrency}
           />
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "users" && (
+      {tab === "users" && (
         <div className="admin-tab-content">
           <div className="form-card">
             <h3
@@ -792,9 +802,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )} */}
+      )}
 
-      {/* {tab === "settings" && (
+      {tab === "settings" && (
         <div className="admin-tab-content">
           <div className="form-card">
             <h3
@@ -896,11 +906,9 @@ const AdminPage = ({
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
 
 export default AdminPage;
-
-
