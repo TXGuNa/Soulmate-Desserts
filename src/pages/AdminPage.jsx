@@ -237,7 +237,7 @@ const AdminPage = ({
         ))}
       </div>
 
-      {tab === "dashboard" && (
+      {/* {tab === "dashboard" && (
         <div
           className="admin-tab-content"
           style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
@@ -488,9 +488,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )}
+      )} */}
 
-      {tab === "invites" && (
+      {/* {tab === "invites" && (
         <div className="admin-tab-content">
           <div className="form-card" style={{ marginBottom: "2rem" }}>
             <h3
@@ -570,8 +570,8 @@ const AdminPage = ({
                     <tr>
                       <th>{t("token")}</th>
                       <th>{t("email")}</th>
-                      <th>{t("role")}</th>
-                      <th>{t("status")}</th>
+                      <th>{t("role")}
+                      </th><th>{t("status")}</th>
                       <th>{t("expires")}</th>
                       <th>{t("actions")}</th>
                     </tr>
@@ -625,9 +625,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )}
+      )} */}
 
-      {tab === "orders" && (
+      {/* {tab === "orders" && (
         <div className="admin-tab-content">
           <div
             className="admin-dashboard-grid"
@@ -701,9 +701,9 @@ const AdminPage = ({
             formatCurrency={formatCurrency}
           />
         </div>
-      )}
+      )} */}
 
-      {tab === "products" && (
+      {/* {tab === "products" && (
         <div className="admin-tab-content">
           <ProductsManagement
             products={safeProducts}
@@ -713,9 +713,9 @@ const AdminPage = ({
             currentCurrency={currentCurrency}
           />
         </div>
-      )}
+      )} */}
 
-      {tab === "ingredients" && (
+      {/* {tab === "ingredients" && (
         <div className="admin-tab-content">
           <IngredientsManagement
             ingredients={safeIngredients}
@@ -724,9 +724,9 @@ const AdminPage = ({
             currentCurrency={currentCurrency}
           />
         </div>
-      )}
+      )} */}
 
-      {tab === "users" && (
+      {/* {tab === "users" && (
         <div className="admin-tab-content">
           <div className="form-card">
             <h3
@@ -792,9 +792,9 @@ const AdminPage = ({
             )}
           </div>
         </div>
-      )}
+      )} */}
 
-      {tab === "settings" && (
+      {/* {tab === "settings" && (
         <div className="admin-tab-content">
           <div className="form-card">
             <h3
@@ -896,7 +896,7 @@ const AdminPage = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
