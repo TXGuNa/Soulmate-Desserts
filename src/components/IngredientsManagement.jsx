@@ -3,7 +3,7 @@ import { useTranslation } from '../context/TranslationContext';
 import { Edit2, Trash2, Check, X } from 'lucide-react';
 import { api } from '../api/client';
 
-const IngredientsManagement = ({ ingredients, setIngredients, products, currentCurrency }) => {
+const IngredientsManagement = ({ ingredients, setIngredients, products, currentCurrency, formatCurrency }) => {
   const { t } = useTranslation();
   const [newIng, setNewIng] = useState({ name: '', unit: '', price: '' });
   const [editing, setEditing] = useState(null);
@@ -312,7 +312,7 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
                           />
                         ) : (
                           <span>
-                            {symbol} {(ing.price * rate).toFixed(2)}
+                            {formatCurrency ? formatCurrency(ing.price) : `${symbol} ${(ing.price * rate).toFixed(2)}`}
                           </span>
                         )}
                       </td>

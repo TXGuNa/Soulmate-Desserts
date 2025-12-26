@@ -118,7 +118,7 @@ export default function App() {
   // Currency conversion utility
   const convertCurrency = (amount) => {
     const currentCurrency = settings.currencies.find(c => c.code === settings.currency);
-    if (!currentCurrency || settings.currency === 'USD') return Number(amount);
+    if (!currentCurrency) return Number(amount);
     return Number(amount) * currentCurrency.rate;
   };
 

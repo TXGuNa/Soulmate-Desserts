@@ -27,8 +27,8 @@ const createThumbnail = (base64Image, maxWidth = 100) => {
 
 const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency, currentCurrency }) => {
   const { t } = useTranslation();
-  const currencyCode = currentCurrency?.code || 'USD';
-  const formatPrice = (amount) => `${currencyCode} ${Number(amount).toFixed(2)}`;
+  // Use passed formatCurrency or fallback
+  const formatPrice = formatCurrency || ((amount) => `${currentCurrency?.code || 'USD'} ${Number(amount).toFixed(2)}`);
   const [editing, setEditing] = useState(null);
   const [searchName, setSearchName] = useState('');
   const [searchError, setSearchError] = useState('');
@@ -79,6 +79,35 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
   const rate = currentCurrency?.rate || 1;
   const symbol = (currentCurrency?.symbol && currentCurrency.symbol.trim()) ? currentCurrency.symbol : (currentCurrency?.code || '$');
   const code = currentCurrency?.code || 'USD';
+
+  // Refs to track previous rate for dynamic updates
+  const prevRateRef = React.useRef(rate);
+
+  // Update form values when currency rate changes while editing
+  useEffect(() => {
+    // If not editing or no change in rate, just update ref
+    if (rate === prevRateRef.current) return;
+
+    // Calculate ratio
+    const ratio = rate / prevRateRef.current;
+    prevRateRef.current = rate;
+
+    // If we have a form with values, scale them
+    const newPrice = (parseFloat(form.price) || 0) * ratio;
+    const newMaking = (parseFloat(form.making_price) || 0) * ratio;
+    // Profit also scales directly by ratio
+    const newProfit = (parseFloat(form.profit) || 0) * ratio;
+    
+    // Profit margin % stays same because both Cost and Price scale by same ratio
+    
+    setForm(prev => ({
+      ...prev,
+      price: newPrice.toFixed(2),
+      making_price: newMaking.toFixed(2),
+      profit: newProfit.toFixed(2)
+      // profit_margin remains unchanged
+    }));
+  }, [rate, form.price, form.making_price, form.profit]);
 
   // Available product tags
   // Using translation keys for labels and adding new badges

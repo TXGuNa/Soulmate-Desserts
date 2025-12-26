@@ -30,27 +30,42 @@ const SettingsPage = ({
   const [editingCurrency, setEditingCurrency] = useState(null);
   const [shippingInput, setShippingInput] = useState("");
 
-  const baseCurrencyObj = useMemo(() => {
-    // Prefer the currently selected currency; otherwise fall back to the rate === 1 base
-    return (
-      settings.currencies.find((c) => c.code === settings.currency) ||
-      settings.currencies.find((c) => c.rate === 1) || {
-        code: "USD",
-        name: "US Dollar",
-        symbol: "$",
-        rate: 1,
-      }
-    );
-  }, [settings.currencies, settings.currency]);
+  /* 
+   * CURRENCY LOGIC EXPLAINED:
+   * Storage Base (Reference): The currency with rate === 1 in the database (e.g., USD). All other rates are "Units per 1 Base".
+   * Visual Base (Default): The currency the user has selected as their main view (e.g., TMT).
+   * 
+   * Problem: Users want to see rates relative to their Visual Base. 
+   * Example: Base=USD(1), TMT(3.5). Result: 1 USD = 3.5 TMT.
+   * If Visual Base is TMT, user wants to see "1 USD = 3.5 TMT".
+   * Math: DisplayValue = VisualBaseRate / RowCurrencyRate.
+   * Input Math: NewRowRate = VisualBaseRate / InputValue.
+   */
+
+  /* 
+   * CURRENCY LOGIC EXPLAINED:
+   */
+
+  // Ensure settings and currencies exist to prevent crashes
+  const safeCurrencies = settings?.currencies || [];
+  const safeStore = settings?.store || {};
+
+  const storageBase = useMemo(() => {
+    return safeCurrencies.find((c) => c.rate === 1) || { code: "USD", rate: 1 };
+  }, [safeCurrencies]);
+
+  const visualBase = useMemo(() => {
+    return safeCurrencies.find((c) => c.code === settings?.currency) || storageBase;
+  }, [safeCurrencies, settings?.currency, storageBase]);
+
   // Base currency switching removed; keep data as-is
 
   // Update shipping input when settings or currency changes
   useEffect(() => {
-    const rate =
-      settings.currencies.find((c) => c.code === settings.currency)?.rate || 1;
-    const val = settings.store?.shipping || 0;
+    const rate = visualBase.rate || 1;
+    const val = safeStore.shipping || 0;
     setShippingInput((val * rate).toFixed(2));
-  }, [settings.store?.shipping, settings.currency, settings.currencies]);
+  }, [safeStore.shipping, settings?.currency, visualBase.rate]);
 
   const languages = [
     { code: "en", name: "English" },
@@ -88,18 +103,11 @@ const SettingsPage = ({
       return;
     }
 
-    // Rebase: make the selected currency the new base (rate 1) and adjust the others
-    const pivotRate = selectedCurrency.rate || 1;
-    const rebasedCurrencies = settings.currencies.map((c) =>
-      c.code === currencyCode
-        ? { ...c, rate: 1 }
-        : { ...c, rate: parseFloat((c.rate / pivotRate).toFixed(6)) || 1 }
-    );
-
+    // Do not rebase. Just change the preferred display currency.
+    // The rates should always be relative to the immutable base (e.g. USD).
     const newSettings = {
       ...settings,
       currency: currencyCode,
-      currencies: rebasedCurrencies,
     };
 
     setSettings(newSettings);
@@ -119,11 +127,16 @@ const SettingsPage = ({
     setError(null);
     let newSettings;
     if (editingCurrency) {
-      // If editing a non-base currency, convert the rate back (invert it for storage)
-      const storedRate =
-        editingCurrency.rate !== 1 && currencyForm.rate !== 0
-          ? parseFloat((1 / currencyForm.rate).toFixed(6))
-          : currencyForm.rate;
+      // Update rate calculation
+      // Input was: 1 Cur = X VisualBase.
+      // Stored needs: Units per USD.
+      // Math: StoredRate = VisualBaseRate / InputValue
+      
+      const inputVal = parseFloat(currencyForm.rate) || 0;
+      // Prevent division by zero or negative
+      const validRate = inputVal > 0 ? inputVal : 1;
+      
+      const finalStoredRate = parseFloat((visualBase.rate / validRate).toFixed(6));
 
       newSettings = {
         ...settings,
@@ -132,17 +145,21 @@ const SettingsPage = ({
             ? {
                 ...currencyForm,
                 code: currencyForm.code.toUpperCase(),
-                rate: storedRate,
+                rate: finalStoredRate,
               }
             : c
         ),
       };
     } else {
+      const inputVal = parseFloat(currencyForm.rate) || 0;
+      const validRate = inputVal > 0 ? inputVal : 1;
+      const finalStoredRate = parseFloat((visualBase.rate / validRate).toFixed(6));
+
       newSettings = {
         ...settings,
         currencies: [
           ...settings.currencies,
-          { ...currencyForm, code: currencyForm.code.toUpperCase() },
+          { ...currencyForm, code: currencyForm.code.toUpperCase(), rate: finalStoredRate },
         ],
       };
     }
@@ -163,11 +180,9 @@ const SettingsPage = ({
 
   const handleEditCurrency = (currency) => {
     setEditingCurrency(currency);
-    // Store the rate as the inverse if it's not the base currency
-    const displayRate =
-      currency.rate !== 0 && currency.rate !== 1
-        ? parseFloat((1 / currency.rate).toFixed(6))
-        : currency.rate;
+    // When editing, show the rate relative to Visual Base
+    // Display = VisualBaseRate / CurrencyRate
+    const displayRate = currency.rate !== 0 ? parseFloat((visualBase.rate / currency.rate).toFixed(6)) : 0;
     setCurrencyForm({ ...currency, rate: displayRate });
   };
 
@@ -226,9 +241,7 @@ const SettingsPage = ({
     }
   };
 
-  const currentCurrency =
-    settings.currencies.find((c) => c.code === settings.currency) ||
-    baseCurrencyObj;
+  const currentCurrency = visualBase;
 
   return (
     <div className="page" style={{ maxWidth: "1200px" }}>
@@ -389,9 +402,7 @@ const SettingsPage = ({
                 <div className="form-group">
                   <label>
                     {t("exchangeRate")}{" "}
-                    {editingCurrency && editingCurrency.rate !== 1
-                      ? `(1 ${currencyForm.code} = ?)`
-                      : `(1 ${baseCurrencyObj.code} = ?)`}{" "}
+                    {`(1 ${currencyForm.code || '???'} = ? ${visualBase.code})`}{" "}
                     *
                   </label>
                   <input
@@ -401,7 +412,7 @@ const SettingsPage = ({
                     onChange={(e) =>
                       setCurrencyForm({
                         ...currencyForm,
-                        rate: parseFloat(e.target.value) || 1,
+                        rate: parseFloat(e.target.value) || 0,
                       })
                     }
                     placeholder="1.0"
@@ -416,13 +427,7 @@ const SettingsPage = ({
                       marginTop: "0.25rem",
                     }}
                   >
-                    {editingCurrency && editingCurrency.rate !== 1
-                      ? `1 ${currencyForm.code || "XXX"} = ${
-                          currencyForm.rate
-                        } ${baseCurrencyObj.code}`
-                      : `1 ${baseCurrencyObj.code} = ${currencyForm.rate} ${
-                          currencyForm.code || "XXX"
-                        }`}
+                    1 {currencyForm.code || "XXX"} = {currencyForm.rate} {visualBase.code}
                   </small>
                 </div>
               </div>
@@ -515,25 +520,26 @@ const SettingsPage = ({
                         <td>{curr.name}</td>
                         <td>{curr.symbol}</td>
                         <td>
-                          {curr.code === baseCurrencyObj.code ? (
-                            <span>1 ({t("baseCurrencyLabel")})</span>
+                          {/* Rate Display: 1 Curr = ? Visual Base */}
+                          {/* Math: VisualRate / CurrRate */}
+                          {curr.code === visualBase.code ? (
+                              <span>1 ({t("default")})</span>
                           ) : (
                             <input
                               type="number"
                               step="0.0001"
                               value={
                                 curr.rate !== 0
-                                  ? parseFloat((1 / curr.rate).toFixed(6))
-                                  : 1
+                                  ? parseFloat((visualBase.rate / curr.rate).toFixed(6))
+                                  : 0
                               }
                               onChange={(e) => {
-                                const displayRate =
-                                  parseFloat(e.target.value) || 1;
-                                const storedRate =
-                                  displayRate !== 0
-                                    ? parseFloat((1 / displayRate).toFixed(6))
-                                    : 1;
-                                handleUpdateExchangeRate(curr.code, storedRate);
+                                const val = parseFloat(e.target.value) || 0;
+                                if (val > 0) {
+                                  // NewStored = VisualRate / NewVal
+                                  const newStored = parseFloat((visualBase.rate / val).toFixed(6));
+                                  handleUpdateExchangeRate(curr.code, newStored);
+                                }
                               }}
                               style={{
                                 width: "120px",
@@ -547,7 +553,7 @@ const SettingsPage = ({
                           )}
                         </td>
                         <td style={{ textAlign: "center" }}>
-                          {curr.code !== baseCurrencyObj.code && (
+                          {curr.code !== storageBase.code && (
                             <div
                               style={{
                                 display: "flex",
@@ -618,7 +624,15 @@ const SettingsPage = ({
               onBlur={() => {
                 const val = parseFloat(shippingInput);
                 if (!isNaN(val)) {
-                  const baseVal = val / currentCurrency.rate;
+                  // Shipping is stored in Base USD
+                  // Input is in Visual Base
+                  // Base = Input / VisualRate
+                  // (Wait, Visual Base Rate is TMT/USD)
+                  // So 10 USD * 3.5 = 35 TMT.
+                  // Input 35. Stored should be 10.
+                  // Stored = Input / VisualRate
+                  const baseVal = val / visualBase.rate;
+                  
                   setSettings((prev) => ({
                     ...prev,
                     store: { ...prev.store, shipping: baseVal },

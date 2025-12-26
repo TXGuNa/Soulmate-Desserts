@@ -727,25 +727,25 @@
     {
       "id": "1",
       "language": "en",
-      "currency": "EUR",
+      "currency": "USD",
       "currencies": [
         {
           "code": "USD",
           "name": "US Dollar",
           "symbol": "$",
-          "rate": 1.086957
+          "rate": 1
         },
         {
           "code": "TMT",
           "name": "Turkmen Manat",
           "symbol": "TMT",
-          "rate": 21.73913
+          "rate": 3.5
         },
         {
           "code": "EUR",
           "name": "Euro",
           "symbol": "EUR",
-          "rate": 1
+          "rate": 0.92
         }
       ],
       "contactInfo": {

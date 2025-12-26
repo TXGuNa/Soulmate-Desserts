@@ -65,10 +65,7 @@ const AdminPage = ({
     [orders]
   );
 
-  const currencyDisplay =
-    currentCurrency?.symbol?.trim() || currentCurrency?.code || "USD";
-  const formatPrice = (amount) =>
-    `${currencyDisplay} ${Number(amount || 0).toFixed(2)}`;
+
 
   // Load messages on mount
   useEffect(() => {
@@ -269,7 +266,7 @@ const AdminPage = ({
                   color: "var(--terracotta)",
                 }}
               >
-                {formatPrice(totalRevenue)}
+                {formatCurrency(totalRevenue)}
               </div>
               <div style={{ color: "var(--chocolate)", opacity: 0.7 }}>
                 {t("totalRevenue")}
@@ -362,7 +359,7 @@ const AdminPage = ({
                     <div
                       style={{ fontWeight: 600, color: "var(--terracotta)" }}
                     >
-                      {formatPrice(o.total)}
+                      {formatCurrency(o.total)}
                     </div>
                     <div
                       style={{
@@ -734,6 +731,7 @@ const AdminPage = ({
             setIngredients={setIngredients}
             products={safeProducts}
             currentCurrency={currentCurrency}
+            formatCurrency={formatCurrency}
           />
         </div>
       )}
