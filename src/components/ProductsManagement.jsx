@@ -416,8 +416,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
         } else {
           // Create new product
           const newProductPayload = {
-             ...productData,
-             id: (products.length + 1).toString()
+            ...productData,
+            id: Date.now().toString(),
           };
           
           const res = await api.createProduct(newProductPayload);
