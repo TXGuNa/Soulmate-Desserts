@@ -132,10 +132,10 @@ export default function App() {
   const handleCreateOrder = async (orderData) => {
     try {
       const newOrder = {
-        id: `#${Date.now()}`,
+        id: `${Date.now()}`,
         ...orderData,
-        status: 'Pending',
-        createdAt: new Date().toISOString()
+        status: "Pending",
+        createdAt: new Date().toISOString(),
       };
       await api.createOrder(newOrder);
       setOrders(prev => [newOrder, ...prev]);

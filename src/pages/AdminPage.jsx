@@ -1,13 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Trash2 } from "lucide-react";
-import ContactManagement from "../components/ContactManagement";
-import IngredientsManagement from "../components/IngredientsManagement";
-import OrdersManagement from "../components/OrdersManagement";
-import ProductsManagement from "../components/ProductsManagement";
-import { useAuth } from "../context/AuthContext";
-import { useTranslation } from "../context/TranslationContext";
-import { ADMIN } from "../data/mockData";
-import { api } from "../api/client";
 
 const AdminPage = ({
   onNavigate,
@@ -912,3 +902,5 @@ const AdminPage = ({
 };
 
 export default AdminPage;
+
+

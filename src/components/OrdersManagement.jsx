@@ -1,49 +1,75 @@
 import React from 'react';
 import { useTranslation } from '../context/TranslationContext';
+import { api } from "../api/client";
 
 const OrdersManagement = ({ orders, setOrders, formatCurrency }) => {
   const { t } = useTranslation();
-  const formatPrice = formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
-  
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders(prev => prev.map(o => 
-      o.id === orderId ? { ...o, status: newStatus } : o
-    ));
+  const formatPrice =
+    formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    // Optimistic update
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+    );
+
+    try {
+      const order = orders.find((o) => o.id === orderId);
+      if (order) {
+        await api.updateOrder(orderId, { ...order, status: newStatus });
+      }
+    } catch (err) {
+      console.error("Failed to update order status:", err);
+    }
   };
 
   const getStatusColor = (status) => {
-    const statusMap = { [t('pending')]: 'Pending', [t('inProgress')]: 'In Progress', [t('ready')]: 'Ready', [t('completed')]: 'Completed', [t('cancelled')]: 'Cancelled' };
-    const originalStatus = Object.keys(statusMap).find(k => statusMap[k] === status) || status;
-    const colors = {
-      'Pending': '#FFF3CD',
-      'In Progress': '#D1ECF1',
-      'Ready': '#D4EDDA',
-      'Completed': '#D4EDDA',
-      'Cancelled': '#F8D7DA'
+    const statusMap = {
+      [t("pending")]: "Pending",
+      [t("inProgress")]: "In Progress",
+      [t("ready")]: "Ready",
+      [t("completed")]: "Completed",
+      [t("cancelled")]: "Cancelled",
     };
-    return colors[originalStatus] || colors[status] || '#E2E3E5';
+    const originalStatus =
+      Object.keys(statusMap).find((k) => statusMap[k] === status) || status;
+    const colors = {
+      Pending: "#FFF3CD",
+      "In Progress": "#D1ECF1",
+      Ready: "#D4EDDA",
+      Completed: "#D4EDDA",
+      Cancelled: "#F8D7DA",
+    };
+    return colors[originalStatus] || colors[status] || "#E2E3E5";
   };
 
   const getStatusTextColor = (status) => {
-    const statusMap = { [t('pending')]: 'Pending', [t('inProgress')]: 'In Progress', [t('ready')]: 'Ready', [t('completed')]: 'Completed', [t('cancelled')]: 'Cancelled' };
-    const originalStatus = Object.keys(statusMap).find(k => statusMap[k] === status) || status;
-    const colors = {
-      'Pending': '#856404',
-      'In Progress': '#0C5460',
-      'Ready': '#155724',
-      'Completed': '#155724',
-      'Cancelled': '#721C24'
+    const statusMap = {
+      [t("pending")]: "Pending",
+      [t("inProgress")]: "In Progress",
+      [t("ready")]: "Ready",
+      [t("completed")]: "Completed",
+      [t("cancelled")]: "Cancelled",
     };
-    return colors[originalStatus] || colors[status] || '#383D41';
+    const originalStatus =
+      Object.keys(statusMap).find((k) => statusMap[k] === status) || status;
+    const colors = {
+      Pending: "#856404",
+      "In Progress": "#0C5460",
+      Ready: "#155724",
+      Completed: "#155724",
+      Cancelled: "#721C24",
+    };
+    return colors[originalStatus] || colors[status] || "#383D41";
   };
 
   const translateStatus = (status) => {
     const statusMap = {
-      'Pending': t('pending'),
-      'In Progress': t('inProgress'),
-      'Ready': t('ready'),
-      'Completed': t('completed'),
-      'Cancelled': t('cancelled')
+      Pending: t("pending"),
+      "In Progress": t("inProgress"),
+      Ready: t("ready"),
+      Completed: t("completed"),
+      Cancelled: t("cancelled"),
     };
     return statusMap[status] || status;
   };
@@ -99,7 +125,7 @@ const OrdersManagement = ({ orders, setOrders, formatCurrency }) => {
                       <strong
                         style={{ fontSize: "1.1rem", color: "var(--espresso)" }}
                       >
-                        {order.id}
+                        {order.id.startsWith("#") ? order.id : `#${order.id}`}
                       </strong>
                       <span
                         style={{
