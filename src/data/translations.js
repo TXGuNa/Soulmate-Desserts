@@ -186,7 +186,7 @@ const DICTIONARY = {
   leaveBlankForAnyEmail: { en: 'Leave blank for any email', ru: 'Оставьте пустым для любого email', tr: 'Herhangi bir e-posta için boş bırakın', tk: 'Islendik e-poçta üçin boş goýuň' },
   leaveBlankForAnyEmailPlaceholder: { en: 'Leave blank for any email', ru: 'Оставьте пустым для любого email', tr: 'Herhangi bir e-posta için boş bırakın', tk: 'Islendik e-poçta üçin boş goýuň' },
   role: { en: 'Role', ru: 'Роль', tr: 'Rol', tk: 'Rol' },
-  regularUser: { en: 'Regular User', ru: 'Обычный Пользователь', tr: 'Normal Kullanıcı', tk: 'Adaty Ulanyjy' },
+  regularUser: { en: 'Customer', ru: 'Клиент', tr: 'Müşteri', tk: 'Müşderi' },
   expiresInDays: { en: 'Expires in (days)', ru: 'Истекает через (дней)', tr: 'Geçerlilik (gün)', tk: 'Möhleti (gün)' },
   createInvite: { en: 'Create Invite', ru: 'Создать Приглашение', tr: 'Davet Oluştur', tk: 'Çakylyk Döret' },
   allInvites: { en: 'All Invites', ru: 'Все Приглашения', tr: 'Tüm Davetler', tk: 'Ähli Çakylyklar' },

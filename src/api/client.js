@@ -78,6 +78,8 @@ export const api = {
   getUsers: () => request("users"),
   createUser: (user) =>
     request("users", { method: "POST", body: JSON.stringify(user) }),
+  updateUser: (id, updates) =>
+    request(`users/${id}`, { method: "PUT", body: JSON.stringify(updates) }),
   deleteUser: (id) => request(`users/${id}`, { method: "DELETE" }),
   // Invites
   getInvites: () => request("invites"),

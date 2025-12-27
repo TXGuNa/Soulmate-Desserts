@@ -406,6 +406,13 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
     const totalCost = calculateCostFromForm();
     const sellingPrice = parseFloat(form.price) || 0;
     
+    console.log('Price Validation Debug:', { 
+      sellingPrice, 
+      totalCost, 
+      formPrice: form.price,
+      currencyRate: rate 
+    });
+    
     if (sellingPrice < totalCost) {
       console.log(t('errorPriceTooLow') || 'Selling Price cannot be lower than Total Cost!');
       return;

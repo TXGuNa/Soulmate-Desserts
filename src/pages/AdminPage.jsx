@@ -151,7 +151,9 @@ const AdminPage = ({
     ? tabItems.filter((item) =>
         ["dashboard", "invites", "orders"].includes(item.key)
       )
-    : tabItems;
+    : user?.role === 'owner' 
+      ? tabItems 
+      : tabItems.filter(item => item.key !== 'users');
 
   if (!isAdmin) {
     return (
@@ -533,6 +535,7 @@ const AdminPage = ({
                   >
                     <option value="dealer">{t("dealer")}</option>
                     <option value="public">{t("regularUser")}</option>
+                    <option value="admin">{t("admin")}</option>
                   </select>
                 </div>
               </div>
@@ -545,7 +548,7 @@ const AdminPage = ({
                     setNewInv({ ...newInv, days: e.target.value })
                   }
                   min="1"
-                  max="90"
+                  max="3650"
                 />
               </div>
               {msg && <p className="form-success">{msg}</p>}
@@ -760,6 +763,7 @@ const AdminPage = ({
                       <th>{t("email")}</th>
                       <th>{t("phone")}</th>
                       <th>{t("role")}</th>
+                      <th>{t("discount")} (%)</th>
                       <th>{t("registered")}</th>
                       <th>{t("actions")}</th>
                     </tr>
@@ -771,33 +775,63 @@ const AdminPage = ({
                         <td>{u.email}</td>
                         <td>{u.phone || "-"}</td>
                         <td>
-                          <span
-                            className={`status ${
-                              u.role === "dealer" ? "active" : ""
-                            }`}
-                            style={{
-                              background:
-                                u.role === "dealer" ? "#D4EDDA" : "#E2E3E5",
-                            }}
-                          >
-                            {u.role === "dealer"
-                              ? t("dealer")
-                              : t("regularUser")}
-                          </span>
-                        </td>
-                        <td>{new Date(u.createdAt).toLocaleDateString()}</td>
-                        <td>
-                          <button
-                            className="btn btn-small btn-danger"
-                            onClick={() => deleteUser(u.id)}
-                          >
-                            {t("remove")}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      <span
+                        className={`status ${
+                          u.role === "dealer" ? "active" : ""
+                        }`}
+                        style={{
+                          background:
+                            u.role === "owner" ? "#FFE5D0" : 
+                            u.role === "admin" ? "#D6EAF8" :
+                            u.role === "dealer" ? "#D4EDDA" : "#E2E3E5",
+                          color: u.role === "owner" ? "#D35400" : "inherit",
+                          fontWeight: u.role === "owner" ? "bold" : "normal"
+                        }}
+                      >
+                        {u.role === "owner" 
+                          ? "Owner"
+                          : u.role === "admin"
+                          ? t("admin")
+                          : u.role === "dealer"
+                          ? t("dealer")
+                          : t("regularUser")}
+                      </span>
+                    </td>
+                    <td>
+                      {u.role === "owner" || u.role === "admin" ? (
+                        <span style={{ opacity: 0.5 }}>-</span>
+                      ) : (
+                        <input 
+                          type="number" 
+                          min="0" 
+                          max="100"
+                          defaultValue={u.discount || 0}
+                          style={{ width: "60px", padding: "4px" }}
+                          onBlur={(e) => {
+                            const val = parseInt(e.target.value);
+                            if (!isNaN(val)) {
+                              api.updateUser(u.id, { discount: val })
+                                .catch(err => console.error("Failed to update discount", err));
+                            }
+                          }}
+                        />
+                      )}
+                    </td>
+                    <td>{new Date(u.createdAt || u.created_at).toLocaleDateString()}</td>
+                    <td>
+                      {u.role !== 'owner' && (
+                        <button
+                          className="btn btn-small btn-danger"
+                          onClick={() => deleteUser(u.id)}
+                        >
+                          {t("remove")}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
               </div>
             )}
           </div>
