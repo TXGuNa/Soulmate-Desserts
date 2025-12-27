@@ -258,6 +258,10 @@ const DICTIONARY = {
   imageURL: { en: 'Image URL', ru: 'URL Изображения', tr: 'Görsel URL', tk: 'Surat URL' },
   uploadImage: { en: 'Upload Image', ru: 'Загрузить Изображение', tr: 'Görsel Yükle', tk: 'Surat Ýükle' },
   description: { en: 'Description', ru: 'Описание', tr: 'Açıklama', tk: 'Düşündiriş' },
+  productImages: { en: 'Product Images', ru: 'Изображения Товара', tr: 'Ürün Görselleri', tk: 'Önüm Suratlary' },
+  uploadMultiple: { en: 'Upload Multiple', ru: 'Загрузить Несколько', tr: 'Çoklu Yükle', tk: 'Birnäçe Ýükle' },
+  addImageURLs: { en: 'Add Image URLs', ru: 'Добавить URL Изображений', tr: 'Görsel URL Ekle', tk: 'Surat URL Goş' },
+  imageURLs: { en: 'Image URLs', ru: 'URL Изображений', tr: 'Görsel URLleri', tk: 'Surat URLleri' },
 
   // Cost Analysis
   costAnalysis: { en: 'Cost Analysis', ru: 'Анализ Стоимости', tr: 'Maliyet Analizi', tk: 'Baha Derňewi' },
