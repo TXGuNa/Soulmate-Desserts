@@ -23,9 +23,12 @@ const HomePage = ({ onNavigate, products, ingredients, onUpdateProduct, formatCu
   });
   
   const selected = filteredProducts.find(p => p.id === selectedId);
+  // Find hero product - prioritize filtered list (current region/lang) but fallback to all products
+  const heroProduct = filteredProducts.find(p => p.tags?.includes('hero')) || products.find(p => p.tags?.includes('hero'));
+
   return (
     <>
-      <Hero onNavigate={onNavigate} />
+      <Hero onNavigate={onNavigate} heroProduct={heroProduct} />
       <section className="section">
         <div className="section-header"><h2>{t('ourCollections')}</h2><p>{t('collectionsSubtitle')}</p></div>
         <div className="products-grid">{filteredProducts.map(p => <ProductCard key={p.id} product={p} onClick={() => setSelectedId(p.id)} onAdd={p => addToCart(p, 1)} ingredients={ingredients} formatCurrency={formatCurrency} />)}</div>
