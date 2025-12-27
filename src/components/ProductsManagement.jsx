@@ -667,233 +667,254 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
             </div>
           </>
         ) : (
-          <form onSubmit={handleSave}>
-            <div className="form-row">
-              <div className="form-group"><label>{t('productName')} *</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} /></div>
-              <div className="form-group"><label>{t('pricePerUnit')} ({symbol}) *</label><input type="number" step="0.01" value={form.price} onChange={e => handlePriceChange(e.target.value)} required onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} onWheel={(e) => e.target.blur()} /></div>
-            </div>
-            
-            <div className="form-group"><label>{t('description')} *</label><textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} required onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} /></div>
-            
-            <div className="form-group">
-              <label>
-                {t("productImages")} <small>({t("uploadMultiple")}) *</small>
-              </label>
-              <div className="file-input-wrapper" style={{marginBottom: '1rem'}}>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleMultipleImageUpload}
-                  disabled={false}
-                />
-                <span className="file-input-label">
-                  {t("selectImageFile")}
-                </span>
-              </div>
-
-              {/* Display uploaded images */}
-              {form.uploadedImages && form.uploadedImages.length > 0 && (
-                <div style={{marginBottom:'1rem'}}>
-                  <p style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem'}}>Uploaded Images ({form.uploadedImages.length}):</p>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
-                    {form.uploadedImages.map((img, idx) => (
-                      <div key={img.id} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
-                        <img src={img.thumbnail || img.data} alt={`Uploaded ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveUploadedImage(img.id)}
-                          style={{position:'absolute',top:0,right:0,background:'rgba(255,0,0,0.7)',color:'white',border:'none',width:'24px',height:'24px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* URL Input Section */}
-              <div style={{ 
-                marginTop: '15px', 
-                padding: '15px', 
-                background: '#faebe0', 
-                borderRadius: '8px' 
-              }}>
-                <label style={{marginBottom: '5px', display: 'block'}}>{t("addImageURLs")}:</label>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                  <input
-                    type="text"
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    placeholder="https://..."
-                    style={{ flex: 1 }}
-                  />
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary"
-                    onClick={handleAddImageUrl}
-                  >
-                   {t("add")} URL
-                  </button>
-                </div>
-
-                {form.images && form.images.length > 0 && (
-                  <div>
-                    <label style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem',display:'block'}}>{t("imageURLs")} ({form.images.length}):</label>
-                    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
-                      {form.images.map((url, idx) => (
-                        <div key={idx} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
-                          <img src={url} alt={`URL ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
-                          <button
-                            type="button"
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveImageURL(idx)}
-                            style={{position:'absolute',top:0,right:0,background:'rgba(255,0,0,0.7)',color:'white',border:'none',width:'24px',height:'24px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+          <form onSubmit={handleSave} style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
+            {/* 1. Basic Information Section */}
+            <div style={{background: 'white', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--blush)'}}>
+               <h4 style={{marginBottom: '1.25rem', color: 'var(--espresso)', fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--blush)'}}>{t('basicInfo') || 'Basic Information'}</h4>
+               <div style={{display: 'flex', flexWrap: 'wrap', gap: '1.5rem'}}>
+                 <div className="form-group" style={{flex: '1 1 300px'}}>
+                   <label>{t('productName')} *</label>
+                   <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} />
+                 </div>
+                 <div className="form-group" style={{flex: '1 1 300px'}}>
+                   <label>{t('productBadge')}</label>
+                   <select 
+                     value={form.tag} 
+                     onChange={e => setForm({...form, tag: e.target.value})}
+                     style={{padding:'1rem',width:'100%',borderRadius:'12px',border:'2px solid var(--blush)'}}
+                   >
+                     {productTags.map(tag => (
+                       <option key={tag.value} value={tag.value}>{tag.label}</option>
+                     ))}
+                   </select>
+                 </div>
+               </div>
+               
+               <div className="form-group" style={{marginTop: '1rem'}}>
+                 <label>{t('description')} *</label>
+                 <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} required style={{minHeight: '120px'}} onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} />
+               </div>
             </div>
 
-            {(form.uploadedImages.length > 0 || form.images.length > 0) && (
+            {/* 2. Media Section */}
+            <div style={{background: 'white', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--blush)'}}>
+               <h4 style={{marginBottom: '1.25rem', color: 'var(--espresso)', fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--blush)'}}>{t('media') || 'Media'}</h4>
+               
+               <div className="form-group">
+                 <label>
+                   {t("productImages")} <small>({t("uploadMultiple")}) *</small>
+                 </label>
+                 <div className="file-input-wrapper" style={{marginBottom: '1rem'}}>
+                   <input
+                     type="file"
+                     multiple
+                     accept="image/*"
+                     onChange={handleMultipleImageUpload}
+                     disabled={false}
+                   />
+                   <span className="file-input-label">
+                     {t("selectImageFile")}
+                   </span>
+                 </div>
+
+                 {/* Display uploaded images */}
+                 {form.uploadedImages && form.uploadedImages.length > 0 && (
+                   <div style={{marginBottom:'1rem'}}>
+                     <p style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem'}}>Uploaded Images ({form.uploadedImages.length}):</p>
+                     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
+                       {form.uploadedImages.map((img, idx) => (
+                         <div key={img.id} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
+                           <img src={img.thumbnail || img.data} alt={`Uploaded ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
+                           <button
+                             type="button"
+                             onClick={() => handleRemoveUploadedImage(img.id)}
+                             style={{position:'absolute',top:0,right:0,background:'rgba(255,0,0,0.7)',color:'white',border:'none',width:'24px',height:'24px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}
+                           >
+                             <X size={16} />
+                           </button>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+
+                 {/* URL Input Section */}
+                 <div style={{ 
+                   marginTop: '1rem', 
+                   padding: '1rem', 
+                   background: '#faebe0', 
+                   borderRadius: '12px' 
+                 }}>
+                   <label style={{marginBottom: '5px', display: 'block'}}>{t("addImageURLs")}:</label>
+                   <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                     <input
+                       type="text"
+                       value={urlInput}
+                       onChange={(e) => setUrlInput(e.target.value)}
+                       placeholder="https://..."
+                       style={{ flex: 1, minWidth: '200px' }}
+                     />
+                     <button 
+                       type="button" 
+                       className="btn btn-secondary"
+                       onClick={handleAddImageUrl}
+                       style={{whiteSpace: 'nowrap'}}
+                     >
+                      {t("add")} URL
+                     </button>
+                   </div>
+
+                   {form.images && form.images.length > 0 && (
+                     <div>
+                       <label style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem',display:'block'}}>{t("imageURLs")} ({form.images.length}):</label>
+                       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
+                         {form.images.map((url, idx) => (
+                           <div key={idx} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
+                             <img src={url} alt={`URL ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
+                             <button
+                               type="button"
+                               className="remove-image-btn"
+                               onClick={() => handleRemoveImageURL(idx)}
+                               style={{position:'absolute',top:0,right:0,background:'rgba(255,0,0,0.7)',color:'white',border:'none',width:'24px',height:'24px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}
+                             >
+                               ×
+                             </button>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+                 </div>
+
+                 {(form.uploadedImages.length > 0 || form.images.length > 0) && (
+                   <div className="form-group" style={{marginTop:'1.5rem'}}>
+                     <label style={{display:'block',marginBottom:'1rem',fontWeight:600}}>👤 {t('selectFaceImage') || 'Select Face Image'}</label>
+                     <p style={{fontSize:'0.85rem',color:'var(--chocolate)',opacity:0.7,marginBottom:'1rem'}}>Choose which photo will be shown in product collections</p>
+                     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(120px,1fr))',gap:'1rem',padding:'1rem',background:'var(--blush)',borderRadius:'12px'}}>
+                       {[...form.uploadedImages, ...form.images.map((url, idx) => ({ id: `url-${idx}`, data: url }))].map((img, idx) => (
+                         <div 
+                           key={img.id} 
+                           onClick={() => setForm(prev => ({ ...prev, faceImageIndex: idx }))}
+                           style={{
+                             position:'relative',
+                             borderRadius:'12px',
+                             overflow:'hidden',
+                             cursor:'pointer',
+                             border: form.faceImageIndex === idx ? '3px solid var(--terracotta)' : '2px solid transparent',
+                             transition:'all 0.2s',
+                             boxShadow: form.faceImageIndex === idx ? '0 0 0 3px white, 0 0 10px rgba(212,133,106,0.4)' : '0 2px 8px rgba(0,0,0,0.1)',
+                             transform: form.faceImageIndex === idx ? 'scale(1.05)' : 'scale(1)'
+                           }}
+                         >
+                           <img src={img.thumbnail || img.data} alt={`Face option ${idx + 1}`} style={{width:'100%',height:'120px',objectFit:'cover'}} />
+                           {form.faceImageIndex === idx && (
+                             <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,background:'rgba(212,133,106,0.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                               <div style={{background:'var(--terracotta)',color:'white',width:'40px',height:'40px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',fontWeight:'bold'}}>✓</div>
+                             </div>
+                           )}
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+               </div>
+            </div>
+
+            {/* 3. Localization Section */}
+            <div style={{background: 'white', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--blush)'}}>
+              <h4 style={{marginBottom: '1.25rem', color: 'var(--espresso)', fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--blush)'}}>{t('localization') || 'Localization'}</h4>
+              
               <div className="form-group">
-                <label style={{display:'block',marginBottom:'1rem',fontWeight:600}}>👤 {t('selectFaceImage') || 'Select Face Image'}</label>
-                <p style={{fontSize:'0.85rem',color:'var(--chocolate)',opacity:0.7,marginBottom:'1rem'}}>Choose which photo will be shown in product collections</p>
-                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(120px,1fr))',gap:'1rem',padding:'1.5rem',background:'var(--blush)',borderRadius:'12px'}}>
-                  {[...form.uploadedImages, ...form.images.map((url, idx) => ({ id: `url-${idx}`, data: url }))].map((img, idx) => (
-                    <div 
-                      key={img.id} 
-                      onClick={() => setForm(prev => ({ ...prev, faceImageIndex: idx }))}
-                      style={{
-                        position:'relative',
-                        borderRadius:'12px',
-                        overflow:'hidden',
-                        cursor:'pointer',
-                        border: form.faceImageIndex === idx ? '3px solid var(--terracotta)' : '2px solid transparent',
-                        transition:'all 0.2s',
-                        boxShadow: form.faceImageIndex === idx ? '0 0 0 3px white, 0 0 10px rgba(212,133,106,0.4)' : '0 2px 8px rgba(0,0,0,0.1)',
-                        transform: form.faceImageIndex === idx ? 'scale(1.05)' : 'scale(1)'
-                      }}
-                    >
-                      <img src={img.thumbnail || img.data} alt={`Face option ${idx + 1}`} style={{width:'100%',height:'120px',objectFit:'cover'}} />
-                      {form.faceImageIndex === idx && (
-                        <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,background:'rgba(212,133,106,0.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                          <div style={{background:'var(--terracotta)',color:'white',width:'40px',height:'40px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',fontWeight:'bold'}}>✓</div>
-                        </div>
-                      )}
-                    </div>
+                <label>{t('showInLanguages')}</label>
+                <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap',padding:'1rem',background:'var(--blush)',borderRadius:'12px', marginTop: '0.5rem'}}>
+                  {availableLanguages.map(lang => (
+                    <label key={lang.code} style={{display:'flex',alignItems:'center',gap:'0.5rem',cursor:'pointer',background:'white',padding:'0.6rem 1rem',borderRadius:'50px',border: form.languages?.includes(lang.code) ? '2px solid var(--terracotta)' : '2px solid transparent', flex: '1 1 auto', justifyContent: 'center', maxWidth: '200px'}}>
+                      <input 
+                        type="checkbox" 
+                        checked={form.languages?.includes(lang.code)} 
+                        onChange={() => handleLanguageToggle(lang.code)}
+                        style={{width:'auto',margin:0}}
+                      />
+                      <span style={{whiteSpace: 'nowrap'}}>{lang.flag} {lang.name}</span>
+                    </label>
                   ))}
                 </div>
               </div>
-            )}
 
-            <div className="form-group">
-               <label>{t('productBadge')}</label>
-               <select 
-                 value={form.tag} 
-                 onChange={e => setForm({...form, tag: e.target.value})}
-                 style={{padding:'1rem',width:'100%',borderRadius:'12px',border:'2px solid var(--blush)'}}
-               >
-                 {productTags.map(tag => (
-                   <option key={tag.value} value={tag.value}>{tag.label}</option>
-                 ))}
-               </select>
-            </div>
-
-            <div className="form-group">
-              <label>{t('showInLanguages')}</label>
-              <div style={{display:'flex',gap:'1rem',flexWrap:'wrap',padding:'1rem',background:'var(--blush)',borderRadius:'12px'}}>
-                {availableLanguages.map(lang => (
-                  <label key={lang.code} style={{display:'flex',alignItems:'center',gap:'0.5rem',cursor:'pointer',background:'white',padding:'0.5rem 1rem',borderRadius:'50px',border: form.languages?.includes(lang.code) ? '2px solid var(--terracotta)' : '2px solid transparent'}}>
-                    <input 
-                      type="checkbox" 
-                      checked={form.languages?.includes(lang.code)} 
-                      onChange={() => handleLanguageToggle(lang.code)}
-                      style={{width:'auto',margin:0}}
-                    />
-                    <span>{lang.flag} {lang.name}</span>
-                  </label>
-                ))}
+              {/* Region/Country Availability */}
+              <div className="form-group" style={{marginTop: '1.5rem'}}>
+                <label style={{display:'flex',alignItems:'center',gap:'0.5rem'}}>
+                  <Globe size={18} /> {t('productRegions') || 'Available Regions'}
+                </label>
+                <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap',padding:'1rem',background:'var(--blush)',borderRadius:'12px', marginTop: '0.5rem'}}>
+                  {countryContacts.length === 0 ? (
+                    <p style={{color:'var(--chocolate)',opacity:0.7,fontSize:'0.9rem'}}>{t('noCountryContacts') || 'No regions configured'}</p>
+                  ) : (
+                    countryContacts.map(contact => (
+                      <label 
+                        key={contact.id} 
+                        style={{
+                          display:'flex',
+                          alignItems:'center',
+                          gap:'0.5rem',
+                          cursor:'pointer',
+                          background:'white',
+                          padding:'0.6rem 1rem',
+                          borderRadius:'50px',
+                          border: form.regions?.includes(contact.countryCode) ? '2px solid var(--terracotta)' : '2px solid transparent',
+                          transition:'all 0.2s',
+                          flex: '1 1 auto',
+                          justifyContent: 'center',
+                          maxWidth: '220px'
+                        }}
+                      >
+                        <input 
+                          type="checkbox" 
+                          checked={form.regions?.includes(contact.countryCode)} 
+                          onChange={() => handleRegionToggle(contact.countryCode)}
+                          style={{width:'auto',margin:0}}
+                        />
+                        <span style={{
+                          display:'inline-flex',
+                          alignItems:'center',
+                          justifyContent:'center',
+                          minWidth:'28px',
+                          height:'28px',
+                          padding: '0 5px',
+                          background: contact.countryCode === 'GENERAL' ? 'var(--espresso)' : 'var(--terracotta)',
+                          color:'white',
+                          borderRadius:'14px',
+                          fontSize:'0.65rem',
+                          fontWeight:700
+                        }}>
+                          {contact.countryCode === 'GENERAL' ? <Globe size={14} /> : contact.countryCode}
+                        </span>
+                        <span style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{contact.country}</span>
+                      </label>
+                    ))
+                  )}
+                </div>
+                <p style={{fontSize:'0.8rem',color:'var(--chocolate)',marginTop:'0.5rem',opacity:0.7}}>
+                  {t('productRegionsHelp') || 'Leave empty to show in all regions, or select specific regions to restrict availability.'}
+                </p>
               </div>
-              <p style={{fontSize:'0.8rem',color:'var(--chocolate)',marginTop:'0.5rem',opacity:0.7}}>
-                {t('selectLanguagesProduct')}
-              </p>
-            </div>
-
-            {/* Region/Country Availability */}
-            <div className="form-group">
-              <label style={{display:'flex',alignItems:'center',gap:'0.5rem'}}>
-                <Globe size={18} /> {t('productRegions') || 'Available Regions'}
-              </label>
-              <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap',padding:'1rem',background:'var(--blush)',borderRadius:'12px'}}>
-                {countryContacts.length === 0 ? (
-                  <p style={{color:'var(--chocolate)',opacity:0.7,fontSize:'0.9rem'}}>{t('noCountryContacts') || 'No regions configured'}</p>
-                ) : (
-                  countryContacts.map(contact => (
-                    <label 
-                      key={contact.id} 
-                      style={{
-                        display:'flex',
-                        alignItems:'center',
-                        gap:'0.5rem',
-                        cursor:'pointer',
-                        background:'white',
-                        padding:'0.5rem 1rem',
-                        borderRadius:'50px',
-                        border: form.regions?.includes(contact.countryCode) ? '2px solid var(--terracotta)' : '2px solid transparent',
-                        transition:'all 0.2s'
-                      }}
-                    >
-                      <input 
-                        type="checkbox" 
-                        checked={form.regions?.includes(contact.countryCode)} 
-                        onChange={() => handleRegionToggle(contact.countryCode)}
-                        style={{width:'auto',margin:0}}
-                      />
-                      <span style={{
-                        display:'inline-flex',
-                        alignItems:'center',
-                        justifyContent:'center',
-                        width:'28px',
-                        height:'28px',
-                        background: contact.countryCode === 'GENERAL' ? 'var(--espresso)' : 'var(--terracotta)',
-                        color:'white',
-                        borderRadius:'50%',
-                        fontSize:'0.65rem',
-                        fontWeight:700
-                      }}>
-                        {contact.countryCode === 'GENERAL' ? <Globe size={14} /> : contact.countryCode}
-                      </span>
-                      <span>{contact.country}</span>
-                    </label>
-                  ))
-                )}
-              </div>
-              <p style={{fontSize:'0.8rem',color:'var(--chocolate)',marginTop:'0.5rem',opacity:0.7}}>
-                {t('productRegionsHelp') || 'Leave empty to show in all regions, or select specific regions to restrict availability.'}
-              </p>
             </div>
             
-            <div style={{margin:'2rem 0',padding:'1.5rem',background:'var(--blush)',borderRadius:'16px'}}>
-              <h4 style={{marginBottom:'1rem'}}>{t('costAnalysis')}</h4>
+            {/* 4. Cost & Pricing Section */}
+            <div style={{background: 'linear-gradient(135deg,rgba(255,240,240,0.5),rgba(245,228,220,0.5))', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--blush)'}}>
+              <h4 style={{marginBottom: '1.25rem', color: 'var(--espresso)', fontFamily: "'Playfair Display', serif", fontSize: '1.2rem'}}>{t('costAnalysis')} & {t('pricing')}</h4>
               
               <div className="form-group"><label>{t('makingPriceLabor')} ({symbol})</label><input type="number" step="0.01" value={form.making_price} onChange={e => handleMakingPriceChange(e.target.value)} placeholder="0.00" onWheel={(e) => e.target.blur()} /></div>
               
-              <div style={{marginBottom:'1rem'}}>
+              <div style={{marginBottom:'1.5rem'}}>
                 <label style={{display:'block',marginBottom:'0.5rem',fontWeight:500}}>{t('ingredients')}</label>
-                <div style={{background:'white',borderRadius:'12px',border:'1px solid var(--blush)'}}>
-                  <table className="admin-table" style={{marginBottom:0}}>
-                    <thead style={{position:'sticky',top:0,zIndex:10,background:'white',boxShadow:'0 2px 4px rgba(0,0,0,0.05)'}}>
+                <div style={{background:'white',borderRadius:'12px',border:'1px solid var(--blush)', overflowX: 'auto'}}>
+                  <table className="admin-table" style={{marginBottom:0, minWidth: '500px'}}>
+                    <thead style={{background:'white',boxShadow:'0 2px 4px rgba(0,0,0,0.05)'}}>
                       <tr>
                         <th style={{padding:'1rem'}}>{t('ingredientName')}</th>
                         <th style={{padding:'1rem'}}>{t('cost')}</th>
-                        <th style={{padding:'1rem'}}>{t('quantity')}</th>
+                        <th style={{padding:'1rem', textAlign: 'center'}}>{t('quantity')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -907,8 +928,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                             <td style={{padding:'0.75rem 1rem', color:'var(--chocolate)', opacity:0.8}}>
                               {symbol} {(ing.price * rate).toFixed(2)} / {ing.unit}
                             </td>
-                            <td style={{padding:'0.75rem 1rem'}}>
-                              <div style={{display:'flex',alignItems:'center',gap:'0.5rem'}}>
+                            <td style={{padding:'0.75rem 1rem', textAlign: 'center'}}>
+                              <div style={{display:'flex',alignItems:'center',gap:'0.5rem', justifyContent: 'center'}}>
                                 <input 
                                   type="number" 
                                   min="0" 
@@ -926,7 +947,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                                   onFocus={e => e.target.select()}
                                   onWheel={(e) => e.target.blur()}
                                 />
-                                <span style={{fontSize:'0.85rem', color:'var(--chocolate)', minWidth:'40px'}}>{ing.unit}</span>
+                                <span style={{fontSize:'0.85rem', color:'var(--chocolate)', minWidth:'40px', textAlign: 'left'}}>{ing.unit}</span>
                               </div>
                             </td>
                           </tr>
@@ -937,12 +958,12 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                 </div>
               </div>
               
-              <div style={{marginTop:'1.5rem',background:'linear-gradient(135deg,rgba(255,240,240,0.5),rgba(245,228,220,0.5))',padding:'2rem',borderRadius:'16px',border:'1px solid var(--blush)'}}>
+              <div style={{background: 'white', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--blush)', boxShadow: '0 4px 20px rgba(0,0,0,0.03)'}}>
                 <h5 style={{fontSize:'0.95rem',fontWeight:600,color:'var(--chocolate)',marginBottom:'1.5rem',textTransform:'uppercase',letterSpacing:'0.5px',opacity:0.8}}>{t('pricingBreakdown')}</h5>
                 
-                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'1.5rem'}}>
+                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:'1.5rem'}}>
                   {/* Total Cost - Display Only */}
-                  <div style={{background:'white',padding:'1.25rem',borderRadius:'12px',border:'2px solid var(--blush)'}}>
+                  <div style={{background:'var(--cream)',padding:'1.25rem',borderRadius:'12px',border:'2px solid var(--blush)'}}>
                     <label style={{display:'block',fontSize:'0.85rem',color:'var(--chocolate)',marginBottom:'0.5rem',fontWeight:500,opacity:0.7,textTransform:'uppercase',letterSpacing:'0.3px'}}>{t('totalCost')}</label>
                     <div style={{display:'flex',alignItems:'baseline',gap:'0.5rem'}}>
                       <span style={{fontSize:'1.5rem',fontWeight:700,color:'var(--chocolate)',opacity:0.9}}>{code}</span>
@@ -969,7 +990,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                           color:'var(--chocolate)',
                           outline:'none',
                           padding:'0',
-                          cursor:'pointer'
+                          cursor:'pointer',
+                          minWidth: 0
                         }} 
                         onWheel={(e) => e.target.blur()}
                       />
@@ -997,7 +1019,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                           color:'var(--chocolate)',
                           outline:'none',
                           padding:'0',
-                          cursor:'pointer'
+                          cursor:'pointer',
+                          minWidth: 0
                         }} 
                         onWheel={(e) => e.target.blur()}
                       />
@@ -1023,7 +1046,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                           color:'var(--chocolate)',
                           outline:'none',
                           padding:'0',
-                          cursor:'pointer'
+                          cursor:'pointer',
+                          minWidth: 0
                         }} 
                         onWheel={(e) => e.target.blur()}
                       />
@@ -1033,19 +1057,53 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
               </div>
             </div>
             
-            <div style={{display:'flex',gap:'1rem',marginTop:'2rem'}}>
-              <button type="submit" className="form-submit" style={{width:'auto',padding:'0.8rem 2rem',marginTop:0}}>{t('save') || 'Save'}</button>
-              <button type="button" className="btn btn-secondary" onClick={() => setEditing(null)}>{t('cancel')}</button>
-              {editing && editing !== 'new' && (
+            <div className="form-actions">
+              {/* Delete Button - Pushed to start */}
+              {editing && editing !== 'new' ? (
+                <div className="form-actions-delete">
+                  <button 
+                    type="button" 
+                    className="btn" 
+                    style={{
+                      background: '#fff0f0', 
+                      color: '#dc3545', 
+                      border: '1px solid #ffcccc',
+                      padding: '0.8rem 1.5rem',
+                      fontSize: '0.95rem'
+                    }}
+                    onClick={() => setConfirmDeleteId(editing)}
+                  >
+                    <Trash2 size={18} style={{marginRight: '0.5rem'}} />
+                    {t('delete')}
+                  </button>
+                </div>
+              ) : <div></div> /* Spacer */}
+
+              {/* Group Save and Cancel */}
+              <div className="form-actions-right">
                 <button 
                   type="button" 
-                  className="btn" 
-                  style={{background:'#dc3545',color:'#fff'}}
-                  onClick={() => setConfirmDeleteId(editing)}
+                  className="btn btn-secondary" 
+                  style={{
+                    padding: '0.8rem 2rem'
+                  }} 
+                  onClick={() => setEditing(null)}
                 >
-                  {t('delete')}
+                  {t('cancel')}
                 </button>
-              )}
+                <button 
+                  type="submit" 
+                  className="btn btn-primary" 
+                  style={{
+                    padding: '0.8rem 2.5rem',
+                    boxShadow: '0 10px 30px rgba(212,133,106,0.25)',
+                    border: 'none',
+                    minWidth: '140px' // kept as min width default, overridden in mobile css
+                  }}
+                >
+                  {t('save')}
+                </button>
+              </div>
             </div>
           </form>
         )}

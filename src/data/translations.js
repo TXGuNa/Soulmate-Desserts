@@ -208,6 +208,10 @@ const DICTIONARY = {
   productRegions: { en: 'Available Regions', ru: 'Доступные Регионы', tr: 'Mevcut Bölgeler', tk: 'Elýeterli Sebitler' },
   productRegionsHelp: { en: 'Leave empty to show in all regions, or select specific regions to restrict availability.', ru: 'Оставьте пустым для всех регионов или выберите конкретные регионы.', tr: 'Tüm bölgelerde göstermek için boş bırakın veya belirli bölgeleri seçin.', tk: 'Ähli sebitlere görkezmek üçin boş goýuň ýa-da belli sebitleri saýlaň.' },
   allRegions: { en: 'All Regions', ru: 'Все Регионы', tr: 'Tüm Bölgeler', tk: 'Ähli Sebitler' },
+  basicInfo: { en: 'Basic Information', ru: 'Основная Информация', tr: 'Temel Bilgiler', tk: 'Esasy Maglumatlar' },
+  media: { en: 'Media', ru: 'Медиа', tr: 'Medya', tk: 'Media' },
+  localization: { en: 'Localization', ru: 'Локализация', tr: 'Yerelleştirme', tk: 'Ýerleşdirmek' },
+  pricing: { en: 'Pricing', ru: 'Ценообразование', tr: 'Fiyatlandırma', tk: 'Bahalar' },
 
   // Admin - Ingredients
   ingredientManagement: { en: 'Ingredient Management', ru: 'Управление Ингредиентами', tr: 'Malzeme Yönetimi', tk: 'Ingredient Dolandyryşy' },

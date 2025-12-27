@@ -1268,3 +1268,58 @@ input[type=number] {
 .admin-tab-content::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--rose), var(--terracotta));
 }
+
+/* 
+ * Form Action Buttons - Responsive Layout 
+ * Ensures buttons look good on both desktop and mobile
+ */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--blush);
+  gap: 1rem;
+}
+
+.form-actions-right {
+  display: flex;
+  gap: 1rem;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+/* Mobile styles for form actions */
+@media (max-width: 768px) {
+  .form-actions {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Save/Cancel group goes to top (order 1) */
+  .form-actions-right {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    order: 1; 
+  }
+
+  /* Delete button goes to bottom (order 2) and full width */
+  .form-actions-delete {
+    width: 100%;
+    order: 2;
+  }
+  
+  .form-actions-delete button {
+    width: 100% !important;
+    justify-content: center;
+  }
+  
+  .form-actions-right button {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
