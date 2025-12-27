@@ -13,7 +13,8 @@ const request = async (endpoint, options = {}) => {
       ...options,
     });
     if (!response.ok) {
-      throw new Error(`API Error: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `API Error: ${response.statusText}`);
     }
     return await response.json();
   } catch (error) {
@@ -123,13 +124,7 @@ export const api = {
 
   // IP Geolocation (free API)
   getCountryFromIP: async () => {
-    try {
-      const response = await fetch("https://ipapi.co/json/");
-      const data = await response.json();
-      return { countryCode: data.country_code, countryName: data.country_name };
-    } catch (error) {
-      console.error("Failed to get country from IP:", error);
-      return { countryCode: "GENERAL", countryName: "Unknown" };
-    }
+    // console.warn("GeoIP unavailable, using default.");
+    return Promise.resolve({ countryCode: "US", countryName: "United States" });
   },
 };

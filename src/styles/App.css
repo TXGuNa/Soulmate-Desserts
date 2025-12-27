@@ -32,7 +32,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--espres
 .btn-secondary:hover{background:var(--espresso);color:var(--cream)}
 .btn-small{padding:0.5rem 1rem;font-size:1rem}
 .btn-danger{background:#DC3545;color:white;border-color:#DC3545}
-.hero-image-wrapper{border-radius:180px 180px 30px 30px;overflow:hidden;box-shadow:0 50px 100px rgba(44,24,16,0.12)}
+.hero-image-wrapper{border-radius:180px 180px 30px 30px;overflow:hidden;box-shadow:0 50px 100px rgba(44,24,16,0.12);border:12px solid #fff}
 .hero-image-wrapper img{width:100%;height:clamp(380px,42vw,620px);object-fit:cover}
 .section{padding:5rem 2rem;max-width:1400px;margin:0 auto}
 .section-header{text-align:center;margin-bottom:4rem}
@@ -52,6 +52,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--espres
 .product-card:hover .product-image img{transform:scale(1.1)}
 .product-tag{position:absolute;top:1rem;left:1rem;background:var(--espresso);color:var(--cream);padding:0.4rem 1rem;border-radius:50px;font-size:0.7rem;font-weight:600;text-transform:uppercase}
 .product-tag.bestseller{background:linear-gradient(135deg,#C9A86A,#E8D5A3);color:var(--espresso)}
+.product-tag.hero{
+  /* Reset global .hero properties that conflict */
+  min-height: auto;
+  width: auto;
+  position: absolute;
+  margin: 0;
+  display: inline-block;
+  overflow: visible;
+  
+  /* Badge specific styling */
+  background: linear-gradient(135deg, #d64545, #b02a37);
+  color: white;
+  box-shadow: 0 4px 15px rgba(212,133,106,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+}
 .product-content{padding:1.5rem;display:flex;flex-direction:column;flex:1}
 .product-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--espresso);margin-bottom:0.5rem}
 .product-description{font-size:0.9rem;color:var(--chocolate);opacity:0.75;margin-bottom:1rem}

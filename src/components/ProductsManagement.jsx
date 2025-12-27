@@ -113,6 +113,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
   // Using translation keys for labels and adding new badges
   const productTags = [
     { value: 'none', label: t('badges.none') },
+    { value: 'hero', label: '👑 ' + (t('badges.hero') || 'Hero') },
     { value: 'bestseller', label: '⭐ ' + t('badges.bestseller') },
     { value: 'popular', label: '🔥 ' + t('badges.popular') },
     { value: 'premium', label: '💎 ' + t('badges.premium') },
@@ -414,6 +415,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
     const basePrice = parseFloat(form.price) / rate;
     const baseMakingPrice = (parseFloat(form.making_price) || 0) / rate;
     
+
+
     const productData = {
       name: form.name, 
       description: form.description, 
@@ -429,6 +432,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
 
     const saveProduct = async () => {
       try {
+
         if (editing && editing !== 'new') {
           // Update existing product
           const existingProduct = products.find(p => p.id === editing);
