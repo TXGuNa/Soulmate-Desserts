@@ -113,6 +113,7 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
   // Using translation keys for labels and adding new badges
   const productTags = [
     { value: 'none', label: t('badges.none') },
+    { value: 'hero', label: '🌟 ' + t('badges.hero') },
     { value: 'bestseller', label: '⭐ ' + t('badges.bestseller') },
     { value: 'popular', label: '🔥 ' + t('badges.popular') },
     { value: 'premium', label: '💎 ' + t('badges.premium') },

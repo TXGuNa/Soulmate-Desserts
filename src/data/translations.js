@@ -326,25 +326,25 @@ const DICTIONARY = {
   // Badges
   badges: { 
     en: {
-      none: 'None', bestseller: 'Bestseller', popular: 'Popular', premium: 'Premium', signature: 'Signature',
+      none: 'None', hero: 'Hero', bestseller: 'Bestseller', popular: 'Popular', premium: 'Premium', signature: 'Signature',
       rustic: 'Rustic', classic: 'Classic', seasonal: 'Seasonal', new: 'New', limited: 'Limited',
       vegan: 'Vegan', glutenFree: 'Gluten Free', chefChoice: "Chef's Choice", organic: 'Organic',
       sugarFree: 'Sugar Free', hypoallergenic: 'Hypoallergenic', dairyFree: 'Dairy Free', nutFree: 'Nut-free', halal: 'Halal', keto: 'Keto'
     },
     ru: {
-      none: 'Нет', bestseller: 'Хит Продаж', popular: 'Популярное', premium: 'Премиум', signature: 'Фирменное',
+      none: 'Нет', hero: 'Герой', bestseller: 'Хит Продаж', popular: 'Популярное', premium: 'Премиум', signature: 'Фирменное',
       rustic: 'Рустик', classic: 'Классика', seasonal: 'Сезонное', new: 'Новинка', limited: 'Лимитировано',
       vegan: 'Веган', glutenFree: 'Без Глютена', chefChoice: 'Выбор Шефа', organic: 'Органик',
       sugarFree: 'Без Сахара', hypoallergenic: 'Гипоаллергенно', dairyFree: 'Без Молока', nutFree: 'Без Орехов', halal: 'Халяль', keto: 'Кето'
     },
     tr: {
-      none: 'Yok', bestseller: 'Çok Satan', popular: 'Popüler', premium: 'Premium', signature: 'İmza',
+      none: 'Yok', hero: 'Hero', bestseller: 'Çok Satan', popular: 'Popüler', premium: 'Premium', signature: 'İmza',
       rustic: 'Rustik', classic: 'Klasik', seasonal: 'Mevsimlik', new: 'Yeni', limited: 'Sınırlı',
       vegan: 'Vegan', glutenFree: 'Glutensiz', chefChoice: 'Şefin Seçimi', organic: 'Organik',
       sugarFree: 'Şekersiz', hypoallergenic: 'Hipoalerjenik', dairyFree: 'Süt İçermez', nutFree: 'Kuruyemişsiz', halal: 'Helal', keto: 'Keto'
     },
     tk: {
-      none: 'Ýok', bestseller: 'Iň Köp Satylan', popular: 'Meşhur', premium: 'Premium', signature: 'Ýörite',
+      none: 'Ýok', hero: 'Baş', bestseller: 'Iň Köp Satylan', popular: 'Meşhur', premium: 'Premium', signature: 'Ýörite',
       rustic: 'Rustik', classic: 'Klassik', seasonal: 'Möwsümleýin', new: 'Täze', limited: 'Çäkli',
       vegan: 'Vegan', glutenFree: 'Glýutensiz', chefChoice: 'Aşpez Saýlawy', organic: 'Organik',
       sugarFree: 'Şekersiz', hypoallergenic: 'Allergiýasyz', dairyFree: 'Süýt Siz', nutFree: 'Ýerfyndyksyz', halal: 'Halal', keto: 'Keto'

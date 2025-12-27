@@ -25,7 +25,7 @@ const HomePage = ({ onNavigate, products, ingredients, onUpdateProduct, formatCu
   const selected = filteredProducts.find(p => p.id === selectedId);
   return (
     <>
-      <Hero onNavigate={onNavigate} />
+      <Hero onNavigate={onNavigate} products={filteredProducts} />
       <section className="section">
         <div className="section-header"><h2>{t('ourCollections')}</h2><p>{t('collectionsSubtitle')}</p></div>
         <div className="products-grid">{filteredProducts.map(p => <ProductCard key={p.id} product={p} onClick={() => setSelectedId(p.id)} onAdd={p => addToCart(p, 1)} ingredients={ingredients} formatCurrency={formatCurrency} />)}</div>

@@ -123,13 +123,23 @@ export const api = {
 
   // IP Geolocation (free API)
   getCountryFromIP: async () => {
+    // Return default immediately to avoid ipapi.co rate limits/CORS in dev
+    return { countryCode: "GENERAL", countryName: "General / International" };
+    /*
     try {
-      const response = await fetch("https://ipapi.co/json/");
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000); 
+
+      const response = await fetch("https://ipapi.co/json/", { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) return { countryCode: "GENERAL", countryName: "General / International" };
+      
       const data = await response.json();
       return { countryCode: data.country_code, countryName: data.country_name };
     } catch (error) {
-      console.error("Failed to get country from IP:", error);
-      return { countryCode: "GENERAL", countryName: "Unknown" };
+      return { countryCode: "GENERAL", countryName: "General / International" };
     }
+    */
   },
 };

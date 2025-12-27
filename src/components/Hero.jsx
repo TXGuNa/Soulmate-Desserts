@@ -1,8 +1,15 @@
 import React from 'react';
 import { useTranslation } from '../context/TranslationContext';
 
-const Hero = ({ onNavigate }) => {
+const Hero = ({ onNavigate, products = [] }) => {
   const { t } = useTranslation();
+  
+  // Find a product with the 'hero' tag
+  const heroProduct = products.find(p => p.tags && p.tags.includes('hero'));
+  const heroImage = (heroProduct && heroProduct.images && heroProduct.images.length > 0) 
+    ? heroProduct.images[0] 
+    : "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800";
+
   return (
   <section className="hero">
     <div className="hero-content">
@@ -16,7 +23,7 @@ const Hero = ({ onNavigate }) => {
       </div>
       <div className="hero-image">
         <div className="hero-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800" alt="Cake" />
+          <img src={heroImage} alt="Hero Cake" />
         </div>
       </div>
     </div>
