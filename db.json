@@ -71,7 +71,7 @@
           "quantity": 0.3
         }
       ],
-      "category_id": "1",
+      "category_id": "4",
       "images": [
         "https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?w=800",
         "https://images.unsplash.com/photo-1505253216365-4b6a9b5c0bf0?w=800"
@@ -82,7 +82,10 @@
         "tr",
         "tk"
       ],
-      "tags": []
+      "tags": [
+        "hero"
+      ],
+      "regions": []
     },
     {
       "id": "3",
