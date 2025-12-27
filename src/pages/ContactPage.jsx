@@ -17,12 +17,13 @@ const ContactPage = ({ onNavigate }) => {
       try {
         setLoadingLocation(true);
         
-        // Get user's country from IP
-        const location = await api.getCountryFromIP();
-        setUserLocation(location);
+        // Fetch location and contacts in parallel for faster loading
+        const [location, contacts] = await Promise.all([
+          api.getCountryFromIP(),
+          api.getCountryContacts()
+        ]);
         
-        // Get all country contacts
-        const contacts = await api.getCountryContacts();
+        setUserLocation(location);
         
         // Find matching contact for user's country
         let matchingContact = contacts.find(c => c.countryCode === location.countryCode);
@@ -35,6 +36,12 @@ const ContactPage = ({ onNavigate }) => {
         setContactInfo(matchingContact);
       } catch (err) {
         console.error('Failed to load contact info:', err);
+        // Try to load at least contacts if IP fails
+        try {
+           const contacts = await api.getCountryContacts();
+           const defaultContact = contacts.find(c => c.isDefault) || contacts[0];
+           setContactInfo(defaultContact);
+        } catch (e) { console.error('Double fail', e); }
       } finally {
         setLoadingLocation(false);
       }

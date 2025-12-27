@@ -73,20 +73,31 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
     return products.filter(p => p.ingredients?.some(ing => ing.id === ingId));
   };
 
-  const handleDelete = (id) => {
-    const usedIn = getUsedInProducts(id);
-    const message = usedIn.length > 0 
-      ? t('ingredientUsedInProducts').replace('{count}', usedIn.length).replace('{products}', usedIn.map(p => p.name).join(', '))
-      : t('deleteIngredientConfirm');
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  const handleDeleteClick = (id) => {
+    setConfirmDeleteId(id);
+  };
+
+  const executeDelete = async () => {
+    if (!confirmDeleteId) return;
     
-    if (window.confirm(message)) {
-      api.deleteIngredient(id).then(() => {
-         setIngredients(prev => prev.filter(ing => ing.id !== id));
-      }).catch(err => {
-         console.error("Failed to delete ingredient:", err);
-         console.log("Failed to delete ingredient");
-      });
+    try {
+      await api.deleteIngredient(confirmDeleteId);
+      setIngredients(prev => prev.filter(ing => ing.id !== confirmDeleteId));
+      setConfirmDeleteId(null);
+    } catch (err) {
+      console.error("Failed to delete ingredient:", err);
+      // Optional: Show error toast here
     }
+  };
+
+  const getDeleteWarningMessage = (id) => {
+    const usedIn = getUsedInProducts(id);
+    if (usedIn.length > 0) {
+      return t('ingredientUsedInProducts').replace('{count}', usedIn.length).replace('{products}', usedIn.map(p => p.name).join(', '));
+    }
+    return t('deleteIngredientConfirm');
   };
 
   return (
@@ -375,7 +386,7 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
                               </button>
                               {!isUsed && (
                                 <button
-                                  onClick={() => handleDelete(ing.id)}
+                                  onClick={() => handleDeleteClick(ing.id)}
                                   title={t("delete")}
                                   style={{
                                     background: "none",
@@ -398,6 +409,43 @@ const IngredientsManagement = ({ ingredients, setIngredients, products, currentC
             </table>
           </div>
         )}
+      </div>
+      
+      {/* Delete Confirmation Modal */}
+      <div className={`modal-overlay ${confirmDeleteId ? 'open' : ''}`} style={{zIndex: 1000}}>
+        <div className="modal" style={{
+          maxWidth: '400px', 
+          padding: '2.5rem', 
+          textAlign: 'center', 
+          height: 'auto', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', // Center content horizontally
+          justifyContent: 'center'
+        }}>
+          <h3 style={{marginBottom: '1rem', color: 'var(--espresso)', fontFamily: "'Playfair Display', serif", fontSize:'1.5rem'}}>
+            {t('confirmDelete')}
+          </h3>
+          <p style={{marginBottom: '2rem', color: 'var(--chocolate)', opacity: 0.8}}>
+            {confirmDeleteId && getDeleteWarningMessage(confirmDeleteId)}
+          </p>
+          <div style={{display: 'flex', gap: '1rem', justifyContent: 'center', width: '100%'}}>
+             <button 
+               className="btn btn-secondary"
+               onClick={() => setConfirmDeleteId(null)}
+               style={{flex: 1}}
+             >
+               {t('cancel')}
+             </button>
+             <button 
+               className="btn btn-danger"
+               onClick={executeDelete}
+               style={{flex: 1}}
+             >
+               {t('delete')}
+             </button>
+          </div>
+        </div>
       </div>
     </>
   );

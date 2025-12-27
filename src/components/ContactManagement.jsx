@@ -6,6 +6,7 @@ import { Trash2, Edit2, Plus, Globe, Phone, Mail, Check, X, Star, MapPin } from 
 const ContactManagement = ({ onDefaultChange, userCountry }) => {
   const { t } = useTranslation();
   const [contacts, setContacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
   const [detectedCountry, setDetectedCountry] = useState(null);
@@ -77,11 +78,14 @@ const ContactManagement = ({ onDefaultChange, userCountry }) => {
   };
 
   const loadContacts = async () => {
+    setIsLoading(true);
     try {
       const data = await api.getCountryContacts();
       setContacts(data);
     } catch (err) {
       console.error('Failed to load country contacts:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -335,7 +339,11 @@ const ContactManagement = ({ onDefaultChange, userCountry }) => {
       )}
 
       {/* Contacts List */}
-      {contacts.length === 0 ? (
+      {isLoading ? (
+        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--chocolate)', opacity: 0.7 }}>
+          <p>{t('loading') || 'Loading...'}</p>
+        </div>
+      ) : contacts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--chocolate)', opacity: 0.7 }}>
           <Globe size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
           <p>{t('noCountryContacts')}</p>
