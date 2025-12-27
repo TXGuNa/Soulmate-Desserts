@@ -99,7 +99,7 @@ const Header = ({ onNavigate, products, formatCurrency }) => {
             {user ? (
               <div className="user-info">
                 {t("hi")}, <strong>{user.name?.split(" ")[0]}</strong>
-                {isAdmin && user.name?.toLowerCase() !== "admin" && (
+                {isAdmin && user.name?.toLowerCase() !== "admin" && user.name !== 'Soulmate' && (
                   <span className="badge admin">{t("admin")}</span>
                 )}
                 {isDealer && !isAdmin && (

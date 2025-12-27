@@ -40,13 +40,7 @@ export const AuthProvider = ({ children }) => {
   }, [authVersion]); // reload if auth version changes (e.g. after registration)
 
   const login = (email, password) => {
-    if (email === ADMIN.email && password === ADMIN.password) {
-      const u = { name: ADMIN.name, email: ADMIN.email, role: ADMIN.role };
-      setUser(u);
-      setRole(u.role);
-      localStorage.setItem('soulmate_user', JSON.stringify(u));
-      return true;
-    }
+
     const foundUser = users.find(u => u.email === email && u.password === password);
     if (foundUser) {
       const u = { name: foundUser.name, email: foundUser.email, role: foundUser.role };
@@ -145,8 +139,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const isAdmin = role === 'admin';
-  const isDealer = role === 'dealer' || role === 'admin';
+  const isAdmin = role === 'admin' || role === 'owner';
+  const isDealer = role === 'dealer' || role === 'admin' || role === 'owner';
 
   return <AuthContext.Provider value={{ user, role, login, logout, registerWithInvite, createInvite, deleteInvite, deleteUser, invites, users, isDealer, isAdmin, authVersion }}>{children}</AuthContext.Provider>;
 };

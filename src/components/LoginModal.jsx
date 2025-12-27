@@ -100,7 +100,7 @@ const LoginModal = ({ isOpen, onClose, onNavigate }) => {
               <div className="form-group"><label>Password *</label><input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required /></div>
               {error && <p className="form-error">{error}</p>}
               <button type="submit" className="form-submit">Sign In</button>
-              <div style={{marginTop:'1.5rem',padding:'1rem',background:'var(--blush)',borderRadius:'12px',fontSize:'0.85rem'}}><strong>🔐 Admin:</strong> admin@soulmate.com / Admin@2024!</div>
+
             </form>
           ) : (
             <form onSubmit={handleRegister}>

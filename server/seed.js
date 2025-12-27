@@ -28,7 +28,8 @@ const seed = async () => {
     // Users
     await client.query(`
       INSERT INTO users (email, password, name, role) 
-      VALUES ('admin@soulmate.com', 'Admin@2024!', 'Admin', 'admin')
+      VALUES 
+      ('txguna@gmail.com', '@Texas2025.,', 'Soulmate', 'owner')
     `);
 
     // Ingredients
