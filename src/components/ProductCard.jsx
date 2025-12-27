@@ -6,11 +6,18 @@ import { calculateCostPrice } from '../utils/helpers';
 const ProductCard = ({ product, onClick, onAdd, ingredients, formatCurrency }) => {
   const { isAdmin } = useAuth();
   const { t } = useTranslation();
-  const price = product.price;
+  const price = parseFloat(product.price) || 0;
   const costPrice = calculateCostPrice(product, ingredients);
   const profit = price - costPrice;
-  const profitMargin = costPrice ? ((profit / price) * 100).toFixed(1) : 0;
+  const profitMargin = (costPrice > 0 && price > 0) ? ((profit / price) * 100) : 0;
+  
   const formatPrice = formatCurrency || ((amount) => `USD ${Number(amount).toFixed(2)}`);
+  
+  const displayValue = (val, isPercentage = false) => {
+    if (isNaN(val)) return '-';
+    if (isPercentage) return `${val.toFixed(1)}%`;
+    return formatPrice(val);
+  };
   
   return (
     <div className="product-card" onClick={onClick}>
@@ -23,9 +30,9 @@ const ProductCard = ({ product, onClick, onAdd, ingredients, formatCurrency }) =
         <p className="product-description">{product.description}</p>
         {isAdmin && (
           <div style={{padding:'0.75rem',background:'var(--blush)',borderRadius:'10px',marginBottom:'1rem',fontSize:'0.85rem'}}>
-            <div style={{display:'flex',justifyContent:'space-between',marginBottom:'0.25rem'}}><span style={{opacity:0.7}}>{t('cost')}:</span><strong>{formatPrice(costPrice)}</strong></div>
-            <div style={{display:'flex',justifyContent:'space-between',marginBottom:'0.25rem'}}><span style={{opacity:0.7}}>{t('profit')}:</span><strong style={{color:'#28a745'}}>{formatPrice(profit)}</strong></div>
-            <div style={{display:'flex',justifyContent:'space-between'}}><span style={{opacity:0.7}}>{t('margin')}:</span><strong style={{color:'#28a745'}}>{profitMargin}%</strong></div>
+            <div style={{display:'flex',justifyContent:'space-between',marginBottom:'0.25rem'}}><span style={{opacity:0.7}}>{t('cost')}:</span><strong>{displayValue(costPrice)}</strong></div>
+            <div style={{display:'flex',justifyContent:'space-between',marginBottom:'0.25rem'}}><span style={{opacity:0.7}}>{t('profit')}:</span><strong style={{color: profit >= 0 ? '#28a745' : '#dc3545'}}>{displayValue(profit)}</strong></div>
+            <div style={{display:'flex',justifyContent:'space-between'}}><span style={{opacity:0.7}}>{t('margin')}:</span><strong style={{color: profitMargin >= 0 ? '#28a745' : '#dc3545'}}>{displayValue(profitMargin, true)}</strong></div>
           </div>
         )}
         <div className="product-footer">

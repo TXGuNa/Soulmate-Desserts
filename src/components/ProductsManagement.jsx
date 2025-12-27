@@ -29,6 +29,8 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
   const { t } = useTranslation();
   // Use passed formatCurrency or fallback
   const formatPrice = formatCurrency || ((amount) => `${currentCurrency?.code || 'USD'} ${Number(amount).toFixed(2)}`);
+  const [loading, setLoading] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
   const [editing, setEditing] = useState(null);
   const [searchName, setSearchName] = useState('');
   const [searchError, setSearchError] = useState('');
@@ -377,6 +379,17 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
     }
   };
 
+  const handleAddImageUrl = (e) => {
+    e.preventDefault();
+    if (urlInput.trim()) {
+      setForm(prev => ({
+        ...prev,
+        images: [...prev.images, urlInput.trim()]
+      }));
+      setUrlInput('');
+    }
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
     
@@ -663,22 +676,30 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
             <div className="form-group"><label>{t('description')} *</label><textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} required onInvalid={e => e.target.setCustomValidity(t('fieldRequired'))} onInput={e => e.target.setCustomValidity('')} /></div>
             
             <div className="form-group">
-              <label>{t('productImages')} (Upload Multiple) *</label>
-              <div style={{display:'flex',gap:'0.5rem',marginBottom:'1rem'}}>
-                <input type="file" accept="image/*" onChange={handleMultipleImageUpload} style={{padding:'0.5rem'}} id="img-upload" multiple hidden />
-                <label htmlFor="img-upload" className="btn btn-secondary btn-small" style={{width:'100%',justifyContent:'center',cursor:'pointer'}}>
-                  {t('selectImageFile')}
-                </label>
+              <label>
+                {t("productImages")} <small>({t("uploadMultiple")}) *</small>
+              </label>
+              <div className="file-input-wrapper" style={{marginBottom: '1rem'}}>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleMultipleImageUpload}
+                  disabled={false}
+                />
+                <span className="file-input-label">
+                  {t("selectImageFile")}
+                </span>
               </div>
 
               {/* Display uploaded images */}
-              {form.uploadedImages.length > 0 && (
+              {form.uploadedImages && form.uploadedImages.length > 0 && (
                 <div style={{marginBottom:'1rem'}}>
                   <p style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem'}}>Uploaded Images ({form.uploadedImages.length}):</p>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
                     {form.uploadedImages.map((img, idx) => (
-                      <div key={img.id} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'2px solid var(--blush)'}}>
-                        <img src={img.thumbnail} alt={`Upload ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
+                      <div key={img.id} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
+                        <img src={img.thumbnail || img.data} alt={`Uploaded ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
                         <button
                           type="button"
                           onClick={() => handleRemoveUploadedImage(img.id)}
@@ -692,60 +713,45 @@ const ProductsManagement = ({ products, setProducts, ingredients, formatCurrency
                 </div>
               )}
 
-              {/* Image URLs section */}
-              <div style={{marginTop:'1rem',padding:'1rem',background:'var(--blush)',borderRadius:'12px'}}>
-                <label style={{display:'block',marginBottom:'0.5rem',fontWeight:500}}>Add Image URLs:</label>
-                <div style={{display:'flex',gap:'0.5rem',marginBottom:'0.5rem'}}>
-                  <input 
-                    type="text" 
-                    placeholder="https://..." 
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        const url = e.target.value.trim();
-                        if (url) {
-                          setForm(prev => ({
-                            ...prev,
-                            images: [...prev.images, url]
-                          }));
-                          e.target.value = '';
-                        }
-                      }
-                    }}
-                    style={{flex:1,padding:'0.5rem',borderRadius:'6px',border:'1px solid var(--chocolate)'}}
+              {/* URL Input Section */}
+              <div style={{ 
+                marginTop: '15px', 
+                padding: '15px', 
+                background: '#faebe0', 
+                borderRadius: '8px' 
+              }}>
+                <label style={{marginBottom: '5px', display: 'block'}}>{t("addImageURLs")}:</label>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                  <input
+                    type="text"
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    placeholder="https://..."
+                    style={{ flex: 1 }}
                   />
                   <button 
-                    type="button"
-                    className="form-submit btn-small"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const input = e.target.previousElementSibling;
-                      const url = input.value.trim();
-                      if (url) {
-                        setForm(prev => ({
-                          ...prev,
-                          images: [...prev.images, url]
-                        }));
-                        input.value = '';
-                      }
-                    }}
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={handleAddImageUrl}
                   >
-                    {t('add') || 'Add'} URL
+                   {t("add")} URL
                   </button>
                 </div>
-                
-                {form.images.length > 0 && (
+
+                {form.images && form.images.length > 0 && (
                   <div>
-                    <p style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem'}}>Image URLs ({form.images.length}):</p>
+                    <label style={{fontSize:'0.9rem',fontWeight:500,marginBottom:'0.5rem',display:'block'}}>{t("imageURLs")} ({form.images.length}):</label>
                     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(100px,1fr))',gap:'0.5rem'}}>
                       {form.images.map((url, idx) => (
-                        <div key={idx} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'2px solid var(--terracotta)'}}>
+                        <div key={idx} style={{position:'relative',borderRadius:'8px',overflow:'hidden',border:'1px solid #eee'}}>
                           <img src={url} alt={`URL ${idx + 1}`} style={{width:'100%',height:'100px',objectFit:'cover'}} />
                           <button
                             type="button"
+                            className="remove-image-btn"
                             onClick={() => handleRemoveImageURL(idx)}
                             style={{position:'absolute',top:0,right:0,background:'rgba(255,0,0,0.7)',color:'white',border:'none',width:'24px',height:'24px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}
                           >
-                            <X size={16} />
+                            ×
                           </button>
                         </div>
                       ))}
