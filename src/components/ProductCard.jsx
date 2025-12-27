@@ -16,7 +16,7 @@ const ProductCard = ({ product, onClick, onAdd, ingredients, formatCurrency }) =
     <div className="product-card" onClick={onClick}>
       <div className="product-image">
         <img src={product.images[0]} alt={product.name} />
-        {product.tags?.[0] && <span className={`product-tag ${product.tags[0]}`}>{t(`badges.${product.tags[0]}`) || product.tags[0]}</span>}
+        {product.tags?.[0] && <span className={`product-tag tag-${product.tags[0]}`}>{t(`badges.${product.tags[0]}`) || product.tags[0]}</span>}
       </div>
       <div className="product-content">
         <h3 className="product-name">{product.name}</h3>
